@@ -387,292 +387,292 @@ public class BioPartitioner extends Partitioner<IntWritable,LongWritable> {
       //  return 62;
       //
       //return 63;
-if(DNA_prefix.get() <= 311504366)
-  return 31;
-
-if(DNA_prefix.get() > 311504366 && DNA_prefix.get() <= 327835406)
-  return 30;
-
-if(DNA_prefix.get() > 327835406 && DNA_prefix.get() <= 341762500)
-  return 29;
-
-if(DNA_prefix.get() > 341762500 && DNA_prefix.get() <= 364841408)
-  return 28;
-
-if(DNA_prefix.get() > 364841408 && DNA_prefix.get() <= 402921068)
-  return 27;
-
-if(DNA_prefix.get() > 402921068 && DNA_prefix.get() <= 419372869)
-  return 26;
-
-if(DNA_prefix.get() > 419372869 && DNA_prefix.get() <= 439168083)
-  return 25;
-
-if(DNA_prefix.get() > 439168083 && DNA_prefix.get() <= 467915609)
-  return 24;
-
-if(DNA_prefix.get() > 467915609 && DNA_prefix.get() <= 484270947)
-  return 23;
-
-if(DNA_prefix.get() > 484270947 && DNA_prefix.get() <= 555178125)
-  return 22;
-
-if(DNA_prefix.get() > 555178125 && DNA_prefix.get() <= 571238617)
-  return 21;
-
-if(DNA_prefix.get() > 571238617 && DNA_prefix.get() <= 585851846)
-  return 20;
-
-if(DNA_prefix.get() > 585851846 && DNA_prefix.get() <= 628624349)
-  return 19;
-
-if(DNA_prefix.get() > 628624349 && DNA_prefix.get() <= 696083712)
-  return 18;
-
-if(DNA_prefix.get() > 696083712 && DNA_prefix.get() <= 717466466)
-  return 17;
-
-if(DNA_prefix.get() > 717466466 && DNA_prefix.get() <= 732233311)
-  return 16;
-
-if(DNA_prefix.get() > 732233311 && DNA_prefix.get() <= 812991875)
-  return 15;
-
-if(DNA_prefix.get() > 812991875 && DNA_prefix.get() <= 843457733)
-  return 14;
-
-if(DNA_prefix.get() > 843457733 && DNA_prefix.get() <= 874941682)
-  return 13;
-
-if(DNA_prefix.get() > 874941682 && DNA_prefix.get() <= 910671209)
-  return 12;
-
-if(DNA_prefix.get() > 910671209 && DNA_prefix.get() <= 946988448)
-  return 11;
-
-if(DNA_prefix.get() > 946988448 && DNA_prefix.get() <= 966792407)
-  return 10;
-
-if(DNA_prefix.get() > 966792407 && DNA_prefix.get() <= 1040222795)
-  return 9;
-
-if(DNA_prefix.get() > 1040222795 && DNA_prefix.get() <= 1063477809)
-  return 8;
-
-if(DNA_prefix.get() > 1063477809 && DNA_prefix.get() <= 1090417683)
-  return 7;
-
-if(DNA_prefix.get() > 1090417683 && DNA_prefix.get() <= 1117774786)
-  return 6;
-
-if(DNA_prefix.get() > 1117774786 && DNA_prefix.get() <= 1141113323)
-  return 5;
-
-if(DNA_prefix.get() > 1141113323 && DNA_prefix.get() <= 1160021869)
-  return 4;
-
-if(DNA_prefix.get() > 1160021869 && DNA_prefix.get() <= 1171868486)
-  return 3;
-
-if(DNA_prefix.get() > 1171868486 && DNA_prefix.get() <= 1197151871)
-  return 2;
-
-if(DNA_prefix.get() > 1197151871 && DNA_prefix.get() <= 1214181037)
-  return 1;
-
-return 0;
-
-
-//if(DNA_prefix.get() <= 307212483)
-//  return 63;
-//
-//if(DNA_prefix.get() > 307212483 && DNA_prefix.get() <= 311484034)
-//  return 62;
-//
-//if(DNA_prefix.get() > 311484034 && DNA_prefix.get() <= 317554618)
-//  return 61;
-//
-//if(DNA_prefix.get() > 317554618 && DNA_prefix.get() <= 327945239)
-//  return 60;
-//
-//if(DNA_prefix.get() > 327945239 && DNA_prefix.get() <= 335910236)
-//  return 59;
-//
-//if(DNA_prefix.get() > 335910236 && DNA_prefix.get() <= 341770174)
-//  return 58;
-//
-//if(DNA_prefix.get() > 341770174 && DNA_prefix.get() <= 358108749)
-//  return 57;
-//
-//if(DNA_prefix.get() > 358108749 && DNA_prefix.get() <= 364834334)
-//  return 56;
-//
-//if(DNA_prefix.get() > 364834334 && DNA_prefix.get() <= 384499846)
-//  return 55;
-//
-//if(DNA_prefix.get() > 384499846 && DNA_prefix.get() <= 402879606)
-//  return 54;
-//
-//if(DNA_prefix.get() > 402879606 && DNA_prefix.get() <= 409317749)
-//  return 53;
-//
-//if(DNA_prefix.get() > 409317749 && DNA_prefix.get() <= 419414814)
-//  return 52;
-//
-//if(DNA_prefix.get() > 419414814 && DNA_prefix.get() <= 432163961)
-//  return 51;
-//
-//if(DNA_prefix.get() > 432163961 && DNA_prefix.get() <= 439259047)
-//  return 50;
-//
-//if(DNA_prefix.get() > 439259047 && DNA_prefix.get() <= 457789219)
-//  return 49;
-//
-//if(DNA_prefix.get() > 457789219 && DNA_prefix.get() <= 468087284)
-//  return 48;
-//
-//if(DNA_prefix.get() > 468087284 && DNA_prefix.get() <= 477085468)
-//  return 47;
-//
-//if(DNA_prefix.get() > 477085468 && DNA_prefix.get() <= 484920934)
-//  return 46;
-//
-//if(DNA_prefix.get() > 484920934 && DNA_prefix.get() <= 549404557)
-//  return 45;
-//
-//if(DNA_prefix.get() > 549404557 && DNA_prefix.get() <= 555615288)
-//  return 44;
-//
-//if(DNA_prefix.get() > 555615288 && DNA_prefix.get() <= 564255624)
-//  return 43;
-//
-//if(DNA_prefix.get() > 564255624 && DNA_prefix.get() <= 571848736)
-//  return 42;
-//
-//if(DNA_prefix.get() > 571848736 && DNA_prefix.get() <= 580076222)
-//  return 41;
-//
-//if(DNA_prefix.get() > 580076222 && DNA_prefix.get() <= 585928109)
-//  return 40;
-//
-//if(DNA_prefix.get() > 585928109 && DNA_prefix.get() <= 605458359)
-//  return 39;
-//
-//if(DNA_prefix.get() > 605458359 && DNA_prefix.get() <= 628882249)
-//  return 38;
-//
-//if(DNA_prefix.get() > 628882249 && DNA_prefix.get() <= 654195294)
-//  return 37;
-//
-//if(DNA_prefix.get() > 654195294 && DNA_prefix.get() <= 696367438)
-//  return 36;
-//
-//if(DNA_prefix.get() > 696367438 && DNA_prefix.get() <= 708181036)
-//  return 35;
-//
-//if(DNA_prefix.get() > 708181036 && DNA_prefix.get() <= 717677696)
-//  return 34;
-//
-//if(DNA_prefix.get() > 717677696 && DNA_prefix.get() <= 725527784)
-//  return 33;
-//
-//if(DNA_prefix.get() > 725527784 && DNA_prefix.get() <= 732398059)
-//  return 32;
-//
-//if(DNA_prefix.get() > 732398059 && DNA_prefix.get() <= 799952971)
+//if(DNA_prefix.get() <= 311504366)
 //  return 31;
 //
-//if(DNA_prefix.get() > 799952971 && DNA_prefix.get() <= 813383533)
+//if(DNA_prefix.get() > 311504366 && DNA_prefix.get() <= 327835406)
 //  return 30;
 //
-//if(DNA_prefix.get() > 813383533 && DNA_prefix.get() <= 823967093)
+//if(DNA_prefix.get() > 327835406 && DNA_prefix.get() <= 341762500)
 //  return 29;
 //
-//if(DNA_prefix.get() > 823967093 && DNA_prefix.get() <= 844342743)
+//if(DNA_prefix.get() > 341762500 && DNA_prefix.get() <= 364841408)
 //  return 28;
 //
-//if(DNA_prefix.get() > 844342743 && DNA_prefix.get() <= 854873933)
+//if(DNA_prefix.get() > 364841408 && DNA_prefix.get() <= 402921068)
 //  return 27;
 //
-//if(DNA_prefix.get() > 854873933 && DNA_prefix.get() <= 875885821)
+//if(DNA_prefix.get() > 402921068 && DNA_prefix.get() <= 419372869)
 //  return 26;
 //
-//if(DNA_prefix.get() > 875885821 && DNA_prefix.get() <= 895803939)
+//if(DNA_prefix.get() > 419372869 && DNA_prefix.get() <= 439168083)
 //  return 25;
 //
-//if(DNA_prefix.get() > 895803939 && DNA_prefix.get() <= 911583586)
+//if(DNA_prefix.get() > 439168083 && DNA_prefix.get() <= 467915609)
 //  return 24;
 //
-//if(DNA_prefix.get() > 911583586 && DNA_prefix.get() <= 926521448)
+//if(DNA_prefix.get() > 467915609 && DNA_prefix.get() <= 484270947)
 //  return 23;
 //
-//if(DNA_prefix.get() > 926521448 && DNA_prefix.get() <= 949754371)
+//if(DNA_prefix.get() > 484270947 && DNA_prefix.get() <= 555178125)
 //  return 22;
 //
-//if(DNA_prefix.get() > 949754371 && DNA_prefix.get() <= 960685833)
+//if(DNA_prefix.get() > 555178125 && DNA_prefix.get() <= 571238617)
 //  return 21;
 //
-//if(DNA_prefix.get() > 960685833 && DNA_prefix.get() <= 969676872)
+//if(DNA_prefix.get() > 571238617 && DNA_prefix.get() <= 585851846)
 //  return 20;
 //
-//if(DNA_prefix.get() > 969676872 && DNA_prefix.get() <= 976528981)
+//if(DNA_prefix.get() > 585851846 && DNA_prefix.get() <= 628624349)
 //  return 19;
 //
-//if(DNA_prefix.get() > 976528981 && DNA_prefix.get() <= 1041666723)
+//if(DNA_prefix.get() > 628624349 && DNA_prefix.get() <= 696083712)
 //  return 18;
 //
-//if(DNA_prefix.get() > 1041666723 && DNA_prefix.get() <= 1051318739)
+//if(DNA_prefix.get() > 696083712 && DNA_prefix.get() <= 717466466)
 //  return 17;
 //
-//if(DNA_prefix.get() > 1051318739 && DNA_prefix.get() <= 1066406250)
+//if(DNA_prefix.get() > 717466466 && DNA_prefix.get() <= 732233311)
 //  return 16;
 //
-//if(DNA_prefix.get() > 1066406250 && DNA_prefix.get() <= 1073929237)
+//if(DNA_prefix.get() > 732233311 && DNA_prefix.get() <= 812991875)
 //  return 15;
 //
-//if(DNA_prefix.get() > 1073929237 && DNA_prefix.get() <= 1090994844)
+//if(DNA_prefix.get() > 812991875 && DNA_prefix.get() <= 843457733)
 //  return 14;
 //
-//if(DNA_prefix.get() > 1090994844 && DNA_prefix.get() <= 1099421807)
+//if(DNA_prefix.get() > 843457733 && DNA_prefix.get() <= 874941682)
 //  return 13;
 //
-//if(DNA_prefix.get() > 1099421807 && DNA_prefix.get() <= 1118667438)
+//if(DNA_prefix.get() > 874941682 && DNA_prefix.get() <= 910671209)
 //  return 12;
 //
-//if(DNA_prefix.get() > 1118667438 && DNA_prefix.get() <= 1135519531)
+//if(DNA_prefix.get() > 910671209 && DNA_prefix.get() <= 946988448)
 //  return 11;
 //
-//if(DNA_prefix.get() > 1135519531 && DNA_prefix.get() <= 1141755473)
+//if(DNA_prefix.get() > 946988448 && DNA_prefix.get() <= 966792407)
 //  return 10;
 //
-//if(DNA_prefix.get() > 1141755473 && DNA_prefix.get() <= 1151535611)
+//if(DNA_prefix.get() > 966792407 && DNA_prefix.get() <= 1040222795)
 //  return 9;
 //
-//if(DNA_prefix.get() > 1151535611 && DNA_prefix.get() <= 1161123661)
+//if(DNA_prefix.get() > 1040222795 && DNA_prefix.get() <= 1063477809)
 //  return 8;
 //
-//if(DNA_prefix.get() > 1161123661 && DNA_prefix.get() <= 1168740282)
+//if(DNA_prefix.get() > 1063477809 && DNA_prefix.get() <= 1090417683)
 //  return 7;
 //
-//if(DNA_prefix.get() > 1168740282 && DNA_prefix.get() <= 1171875000)
+//if(DNA_prefix.get() > 1090417683 && DNA_prefix.get() <= 1117774786)
 //  return 6;
 //
-//if(DNA_prefix.get() > 1171875000 && DNA_prefix.get() <= 1190229034)
+//if(DNA_prefix.get() > 1117774786 && DNA_prefix.get() <= 1141113323)
 //  return 5;
 //
-//if(DNA_prefix.get() > 1190229034 && DNA_prefix.get() <= 1198165291)
+//if(DNA_prefix.get() > 1141113323 && DNA_prefix.get() <= 1160021869)
 //  return 4;
 //
-//if(DNA_prefix.get() > 1198165291 && DNA_prefix.get() <= 1207568298)
+//if(DNA_prefix.get() > 1160021869 && DNA_prefix.get() <= 1171868486)
 //  return 3;
 //
-//if(DNA_prefix.get() > 1207568298 && DNA_prefix.get() <= 1214265607)
+//if(DNA_prefix.get() > 1171868486 && DNA_prefix.get() <= 1197151871)
 //  return 2;
 //
-//if(DNA_prefix.get() > 1214265607 && DNA_prefix.get() <= 1218505231)
+//if(DNA_prefix.get() > 1197151871 && DNA_prefix.get() <= 1214181037)
 //  return 1;
 //
 //return 0;
+
+
+if(DNA_prefix.get() <= 307212483)
+  return 63;
+
+if(DNA_prefix.get() > 307212483 && DNA_prefix.get() <= 311484034)
+  return 62;
+
+if(DNA_prefix.get() > 311484034 && DNA_prefix.get() <= 317554618)
+  return 61;
+
+if(DNA_prefix.get() > 317554618 && DNA_prefix.get() <= 327945239)
+  return 60;
+
+if(DNA_prefix.get() > 327945239 && DNA_prefix.get() <= 335910236)
+  return 59;
+
+if(DNA_prefix.get() > 335910236 && DNA_prefix.get() <= 341770174)
+  return 58;
+
+if(DNA_prefix.get() > 341770174 && DNA_prefix.get() <= 358108749)
+  return 57;
+
+if(DNA_prefix.get() > 358108749 && DNA_prefix.get() <= 364834334)
+  return 56;
+
+if(DNA_prefix.get() > 364834334 && DNA_prefix.get() <= 384499846)
+  return 55;
+
+if(DNA_prefix.get() > 384499846 && DNA_prefix.get() <= 402879606)
+  return 54;
+
+if(DNA_prefix.get() > 402879606 && DNA_prefix.get() <= 409317749)
+  return 53;
+
+if(DNA_prefix.get() > 409317749 && DNA_prefix.get() <= 419414814)
+  return 52;
+
+if(DNA_prefix.get() > 419414814 && DNA_prefix.get() <= 432163961)
+  return 51;
+
+if(DNA_prefix.get() > 432163961 && DNA_prefix.get() <= 439259047)
+  return 50;
+
+if(DNA_prefix.get() > 439259047 && DNA_prefix.get() <= 457789219)
+  return 49;
+
+if(DNA_prefix.get() > 457789219 && DNA_prefix.get() <= 468087284)
+  return 48;
+
+if(DNA_prefix.get() > 468087284 && DNA_prefix.get() <= 477085468)
+  return 47;
+
+if(DNA_prefix.get() > 477085468 && DNA_prefix.get() <= 484920934)
+  return 46;
+
+if(DNA_prefix.get() > 484920934 && DNA_prefix.get() <= 549404557)
+  return 45;
+
+if(DNA_prefix.get() > 549404557 && DNA_prefix.get() <= 555615288)
+  return 44;
+
+if(DNA_prefix.get() > 555615288 && DNA_prefix.get() <= 564255624)
+  return 43;
+
+if(DNA_prefix.get() > 564255624 && DNA_prefix.get() <= 571848736)
+  return 42;
+
+if(DNA_prefix.get() > 571848736 && DNA_prefix.get() <= 580076222)
+  return 41;
+
+if(DNA_prefix.get() > 580076222 && DNA_prefix.get() <= 585928109)
+  return 40;
+
+if(DNA_prefix.get() > 585928109 && DNA_prefix.get() <= 605458359)
+  return 39;
+
+if(DNA_prefix.get() > 605458359 && DNA_prefix.get() <= 628882249)
+  return 38;
+
+if(DNA_prefix.get() > 628882249 && DNA_prefix.get() <= 654195294)
+  return 37;
+
+if(DNA_prefix.get() > 654195294 && DNA_prefix.get() <= 696367438)
+  return 36;
+
+if(DNA_prefix.get() > 696367438 && DNA_prefix.get() <= 708181036)
+  return 35;
+
+if(DNA_prefix.get() > 708181036 && DNA_prefix.get() <= 717677696)
+  return 34;
+
+if(DNA_prefix.get() > 717677696 && DNA_prefix.get() <= 725527784)
+  return 33;
+
+if(DNA_prefix.get() > 725527784 && DNA_prefix.get() <= 732398059)
+  return 32;
+
+if(DNA_prefix.get() > 732398059 && DNA_prefix.get() <= 799952971)
+  return 31;
+
+if(DNA_prefix.get() > 799952971 && DNA_prefix.get() <= 813383533)
+  return 30;
+
+if(DNA_prefix.get() > 813383533 && DNA_prefix.get() <= 823967093)
+  return 29;
+
+if(DNA_prefix.get() > 823967093 && DNA_prefix.get() <= 844342743)
+  return 28;
+
+if(DNA_prefix.get() > 844342743 && DNA_prefix.get() <= 854873933)
+  return 27;
+
+if(DNA_prefix.get() > 854873933 && DNA_prefix.get() <= 875885821)
+  return 26;
+
+if(DNA_prefix.get() > 875885821 && DNA_prefix.get() <= 895803939)
+  return 25;
+
+if(DNA_prefix.get() > 895803939 && DNA_prefix.get() <= 911583586)
+  return 24;
+
+if(DNA_prefix.get() > 911583586 && DNA_prefix.get() <= 926521448)
+  return 23;
+
+if(DNA_prefix.get() > 926521448 && DNA_prefix.get() <= 949754371)
+  return 22;
+
+if(DNA_prefix.get() > 949754371 && DNA_prefix.get() <= 960685833)
+  return 21;
+
+if(DNA_prefix.get() > 960685833 && DNA_prefix.get() <= 969676872)
+  return 20;
+
+if(DNA_prefix.get() > 969676872 && DNA_prefix.get() <= 976528981)
+  return 19;
+
+if(DNA_prefix.get() > 976528981 && DNA_prefix.get() <= 1041666723)
+  return 18;
+
+if(DNA_prefix.get() > 1041666723 && DNA_prefix.get() <= 1051318739)
+  return 17;
+
+if(DNA_prefix.get() > 1051318739 && DNA_prefix.get() <= 1066406250)
+  return 16;
+
+if(DNA_prefix.get() > 1066406250 && DNA_prefix.get() <= 1073929237)
+  return 15;
+
+if(DNA_prefix.get() > 1073929237 && DNA_prefix.get() <= 1090994844)
+  return 14;
+
+if(DNA_prefix.get() > 1090994844 && DNA_prefix.get() <= 1099421807)
+  return 13;
+
+if(DNA_prefix.get() > 1099421807 && DNA_prefix.get() <= 1118667438)
+  return 12;
+
+if(DNA_prefix.get() > 1118667438 && DNA_prefix.get() <= 1135519531)
+  return 11;
+
+if(DNA_prefix.get() > 1135519531 && DNA_prefix.get() <= 1141755473)
+  return 10;
+
+if(DNA_prefix.get() > 1141755473 && DNA_prefix.get() <= 1151535611)
+  return 9;
+
+if(DNA_prefix.get() > 1151535611 && DNA_prefix.get() <= 1161123661)
+  return 8;
+
+if(DNA_prefix.get() > 1161123661 && DNA_prefix.get() <= 1168740282)
+  return 7;
+
+if(DNA_prefix.get() > 1168740282 && DNA_prefix.get() <= 1171875000)
+  return 6;
+
+if(DNA_prefix.get() > 1171875000 && DNA_prefix.get() <= 1190229034)
+  return 5;
+
+if(DNA_prefix.get() > 1190229034 && DNA_prefix.get() <= 1198165291)
+  return 4;
+
+if(DNA_prefix.get() > 1198165291 && DNA_prefix.get() <= 1207568298)
+  return 3;
+
+if(DNA_prefix.get() > 1207568298 && DNA_prefix.get() <= 1214265607)
+  return 2;
+
+if(DNA_prefix.get() > 1214265607 && DNA_prefix.get() <= 1218505231)
+  return 1;
+
+return 0;
 
       //13 chars
       //if(DNA_prefix.get() <= 311692847)

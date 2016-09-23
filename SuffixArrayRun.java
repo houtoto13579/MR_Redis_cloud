@@ -25,7 +25,7 @@ public class SuffixArrayRun{
         Job job = new Job(new Configuration());
         Configuration conf = job.getConfiguration();
         // Specify various job-specific parameters     
-        job.setJobName("Run SuffixArray for Bio Info (32) 160w default GC");
+        job.setJobName("Run SuffixArray for Bio Info (64) 160w CMS GC MGET Suffix");
         //job.setJobName("Run SuffixArray for Bio Info (32) 160W CMS AlwaysTenure NewRatio=5");
 
         job.setJarByClass(SuffixArrayRun.class);
@@ -44,7 +44,7 @@ public class SuffixArrayRun{
         job.setOutputFormatClass(TextOutputFormat.class);
 
         job.setPartitionerClass(BioPartitioner.class);
-        job.setNumReduceTasks(32);
+        job.setNumReduceTasks(64);
 
         FileInputFormat.addInputPath(job, new Path(args[0]));
         
