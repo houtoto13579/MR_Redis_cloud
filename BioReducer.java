@@ -738,57 +738,14 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
       //int size_index = 0;
       //List<String> mgetsuffix_result = new ArrayList<String>(size);
       long [] suffix_start = new long[keys.size()];
-      String [] suffix_key = new String[keys.size()];
-      for(int i=0;i<keys.size();i++){
+      for(int i=0;i<keys.size();i++)
         suffix_start[i] = starts.get(i).longValue();
-        suffix_key[i] = keys.get(i).toString();
-      }
 
       //sLogger.info("hhwu DEBUG: keys size: "+keys.size());
       //sLogger.info("hhwu DEBUG: start size: "+starts.size());
-      return jedis.mgetsuffix(suffix_key, suffix_start);
-      //return jedis.mgetsuffix(keys.toArray(new String[0]), suffix_start);
-      //if(size <= MGET_RANGE_SIZE){
-      //  String [] suffix_key = new String[size];
-      //  long [] suffix_start = new long[size];
-      //  
-      //  for(int i=0;i<size;i++){
-      //    suffix_key[i] = keys.get(i).toString();
-      //    suffix_start[i] = starts.get(i).longValue();
-      //  }
-
-      //  mgetsuffix_result = jedis.mgetsuffix(suffix_key, suffix_start);
-      //}
-      //else{
-      //  String [] suffix_key = new String[MGET_RANGE_SIZE];
-      //  long [] suffix_start = new long[MGET_RANGE_SIZE];
-
-      //  do{
-      //    for(int i=0;i<MGET_RANGE_SIZE;i++){
-      //      suffix_key[i] = keys.get(size_index+i).toString();
-      //      suffix_start[i] = starts.get(size_index+i).longValue();
-      //    }
-
-      //    mgetsuffix_result.addAll(jedis.mgetsuffix(suffix_key, suffix_start));
-      //    size_index += MGET_RANGE_SIZE;
-      //  } while(size_index + MGET_RANGE_SIZE <= size);
-
-      //  int end_index = size % MGET_RANGE_SIZE;
-      //  if(end_index != 0){
-      //    suffix_key = new String[end_index];
-      //    suffix_start = new long[end_index];
-      //    
-      //    for(int i=0;i<end_index;i++){
-      //      suffix_key[i] = keys.get(size_index+i).toString();
-      //      suffix_start[i] = starts.get(size_index+i).longValue();
-      //    }
-
-      //    mgetsuffix_result.addAll(jedis.mgetsuffix(suffix_key, suffix_start));
-      //  }
-      //}
-        
-      //return mgetsuffix_result;
-
+      //return jedis.mgetsuffix(suffix_key, suffix_start);
+      return jedis.mgetsuffix(keys.toArray(new String[0]), suffix_start);
+      
     }
 
 }

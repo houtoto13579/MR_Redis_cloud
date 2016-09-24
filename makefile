@@ -1,7 +1,7 @@
 exe:
 	#hadoop jar ProcessBmp.jar ProcessBmp /user/hduser/input_one_min_nc /user/hduser/output
 	#hadoop jar ProcessBmp.jar ProcessBmp /user/hduser/input_one_min /user/hduser/output
-	hadoop jar SuffixArrayRun.jar SuffixArrayRun /input_oib /output_bio
+	hadoop jar SuffixArrayRun.jar SuffixArrayRun /input_bio /output_bio
 rmr:
 	hadoop fs -rm -r /output_bio
 compile:
