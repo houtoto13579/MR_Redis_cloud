@@ -289,7 +289,7 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
 
     @Override
     public void reduce(IntWritable key, Iterable<LongWritable> values, Context context) throws IOException, InterruptedException {
-    //public void reduce(LongWritable key, Iterable<LongWritable> values, Context context) throws IOException, InterruptedException {
+      /*** initialize the jedis connections***/
       if(this.Redis_Connection){
         this.jedis0 = this.pool_0.getResource();
         this.jedis1 = this.pool_1.getResource();
@@ -323,7 +323,7 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
       int reduce_group_size = 0;
       
       if(key.get() == 0){
-        StringBuilder tmp_suffix_offset = new StringBuilder("$ ");;
+        StringBuilder tmp_suffix_offset = new StringBuilder("$ ");
         for(LongWritable value: values){
           offset = (int)(value.get()%1000L);
           tmp_suffix_offset.append(offset);
@@ -352,8 +352,6 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
           mem_key = new Long((value.get()-offset)/1000L);
           
           dispatchKeyValuePair(mem_key, new Integer(offset));
-          //this.groupKeys.add(mem_key);
-          //this.groupValues.add(new Integer(offset));
           
           reduce_group_size++;
           this.get_size++;
@@ -391,7 +389,6 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
           tmp_suffix_offset.append(" ");
           tmp_suffix_offset.append(offset);
 
-          //context.write(new LongWritable((value.get()-offset)/1000L), new Text(tmp_suffix_offset.toString()));
           this.seqNumber.set((value.get()-offset)/1000L);
           this.suffixOffset.set(tmp_suffix_offset.toString());
           context.write(this.seqNumber, this.suffixOffset);
@@ -411,8 +408,6 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
        
           dispatchKeyValuePair(mem_key, new Integer(offset));
    
-          //this.groupKeys.add(mem_key);
-          //this.groupValues.add(new Integer(offset));
 
           reduce_group_size++;
           this.get_size++;
@@ -510,7 +505,8 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
     }
 
     private void dispatchKeyValuePair(Long f_key, Integer f_value){
-      int sel = (int)((f_key.longValue()/10L)%16L);
+      /*** Note that 100L means 2 characters  ***/
+      int sel = (int)((f_key.longValue()/100L)%16L);
 
       switch(sel){
         case 1:  this.bulkOfKeys_1.add(f_key.toString());  this.bulkOfOffsets_1.add(f_value); break;

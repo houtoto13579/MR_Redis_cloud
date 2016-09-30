@@ -182,7 +182,7 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
         prefix_DNA = suffix_str.substring(i);
         context.write(new IntWritable(profilingDNASeq(prefix_DNA, NUM_PREFIX)), new LongWritable(seqNumberAndOffset+i));
       }
-      //context.write(new IntWritable(0), new LongWritable(seqNumberAndOffset+suffix_str.length()));
+      context.write(new IntWritable(0), new LongWritable(seqNumberAndOffset+suffix_str.length()));
 
     } catch(IOException e){
       System.out.println("Error occurs!");
