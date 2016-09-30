@@ -45,14 +45,15 @@ import java.util.concurrent.TimeoutException;
 
 public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable, Text> {
   static final int NUM_PREFIX = 13;
-  static final int READ_END = 300;
+  static final int TIME_OUT = 600000;
   static final int GROUP_SIZE = 1600000;
-  static final int MGET_SUFFIX_SIZE = GROUP_SIZE/16;
+  static final int MGET_SUFFIX_SIZE = 100000;
   static final boolean NOT_SORT_YET = false;
   static final boolean START_TO_SORT = true;
 
   private static final Logger sLogger = Logger.getLogger(BioReducer.class.getName());
 
+  private boolean Redis_Connection;
 
   private JedisPool pool_0;
   private JedisPool pool_1;
@@ -163,6 +164,7 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
   private ArrayList <Integer> scramble_order;
 
 
+  private ArrayList <SeqNoSuffixOffset> sortedSuffix;
   private int get_size;
 
   private LongWritable seqNumber;
@@ -171,60 +173,46 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
   @Override
   protected void setup(Context context) throws IOException, InterruptedException {
     
-    this.jpc_0.setMaxTotal(100);
-    this.jpc_1.setMaxTotal(100);
-    this.jpc_2.setMaxTotal(100);
-    this.jpc_3.setMaxTotal(100);
-    this.jpc_4.setMaxTotal(100);
-    this.jpc_5.setMaxTotal(100);
-    this.jpc_6.setMaxTotal(100);
-    this.jpc_7.setMaxTotal(100);
-    this.jpc_8.setMaxTotal(100);
-    this.jpc_9.setMaxTotal(100);
-    this.jpc_10.setMaxTotal(100);
-    this.jpc_11.setMaxTotal(100);
-    this.jpc_12.setMaxTotal(100);
-    this.jpc_13.setMaxTotal(100);
-    this.jpc_14.setMaxTotal(100);
-    this.jpc_15.setMaxTotal(100);
+    this.jpc_0.setMaxTotal(64);
+    this.jpc_1.setMaxTotal(64);
+    this.jpc_2.setMaxTotal(64);
+    this.jpc_3.setMaxTotal(64);
+    this.jpc_4.setMaxTotal(64);
+    this.jpc_5.setMaxTotal(64);
+    this.jpc_6.setMaxTotal(64);
+    this.jpc_7.setMaxTotal(64);
+    this.jpc_8.setMaxTotal(64);
+    this.jpc_9.setMaxTotal(64);
+    this.jpc_10.setMaxTotal(64);
+    this.jpc_11.setMaxTotal(64);
+    this.jpc_12.setMaxTotal(64);
+    this.jpc_13.setMaxTotal(64);
+    this.jpc_14.setMaxTotal(64);
+    this.jpc_15.setMaxTotal(64);
 
 
-    this.pool_0  = new JedisPool(this.jpc_0, "140.109.17.134", 6379, 900000);
-    this.pool_1  = new JedisPool(this.jpc_1, "192.168.100.102", 6379, 900000);
-    this.pool_2  = new JedisPool(this.jpc_2, "192.168.100.112", 6379, 900000);
-    this.pool_3  = new JedisPool(this.jpc_3, "192.168.100.105", 6379, 900000);
-    this.pool_4  = new JedisPool(this.jpc_4, "192.168.100.106", 6379, 900000);
-    this.pool_5  = new JedisPool(this.jpc_5, "192.168.100.107", 6379, 900000);
-    this.pool_6  = new JedisPool(this.jpc_6, "192.168.100.118", 6379, 900000);
-    this.pool_7  = new JedisPool(this.jpc_7, "192.168.100.109", 6379, 900000);
-    this.pool_8  = new JedisPool(this.jpc_8, "192.168.100.110", 6379, 900000);
-    this.pool_9  = new JedisPool(this.jpc_9, "192.168.100.111", 6379, 900000);
-    this.pool_10 = new JedisPool(this.jpc_10, "192.168.100.119", 6379, 900000);
-    this.pool_11 = new JedisPool(this.jpc_11, "192.168.100.113", 6379, 900000);
-    this.pool_12 = new JedisPool(this.jpc_12, "192.168.100.114", 6379, 900000);
-    this.pool_13 = new JedisPool(this.jpc_13, "192.168.100.115", 6379, 900000);
-    this.pool_14 = new JedisPool(this.jpc_14, "192.168.100.116", 6379, 900000);
-    this.pool_15 = new JedisPool(this.jpc_15, "192.168.100.117", 6379, 900000);
+    this.pool_0  = new JedisPool(this.jpc_0, "140.109.17.134", 6379, TIME_OUT);
+    this.pool_1  = new JedisPool(this.jpc_1, "192.168.100.102", 6379, TIME_OUT);
+    this.pool_2  = new JedisPool(this.jpc_2, "192.168.100.112", 6379, TIME_OUT);
+    this.pool_3  = new JedisPool(this.jpc_3, "192.168.100.105", 6379, TIME_OUT);
+    this.pool_4  = new JedisPool(this.jpc_4, "192.168.100.106", 6379, TIME_OUT);
+    this.pool_5  = new JedisPool(this.jpc_5, "192.168.100.107", 6379, TIME_OUT);
+    this.pool_6  = new JedisPool(this.jpc_6, "192.168.100.118", 6379, TIME_OUT);
+    this.pool_7  = new JedisPool(this.jpc_7, "192.168.100.109", 6379, TIME_OUT);
+    this.pool_8  = new JedisPool(this.jpc_8, "192.168.100.110", 6379, TIME_OUT);
+    this.pool_9  = new JedisPool(this.jpc_9, "192.168.100.111", 6379, TIME_OUT);
+    this.pool_10 = new JedisPool(this.jpc_10, "192.168.100.119", 6379, TIME_OUT);
+    this.pool_11 = new JedisPool(this.jpc_11, "192.168.100.113", 6379, TIME_OUT);
+    this.pool_12 = new JedisPool(this.jpc_12, "192.168.100.121", 6379, TIME_OUT);
+    this.pool_13 = new JedisPool(this.jpc_13, "192.168.100.115", 6379, TIME_OUT);
+    this.pool_14 = new JedisPool(this.jpc_14, "192.168.100.116", 6379, TIME_OUT);
+    this.pool_15 = new JedisPool(this.jpc_15, "192.168.100.117", 6379, TIME_OUT);
 
-    this.jedis0 = this.pool_0.getResource();
-    this.jedis1 = this.pool_1.getResource();
-    this.jedis2 = this.pool_2.getResource();
-    this.jedis3 = this.pool_3.getResource();
-    this.jedis4 = this.pool_4.getResource();
-    this.jedis5 = this.pool_5.getResource();
-    this.jedis6 = this.pool_6.getResource();
-    this.jedis7 = this.pool_7.getResource();
-    this.jedis8 = this.pool_8.getResource();
-    this.jedis9 = this.pool_9.getResource();
-    this.jedis10 = this.pool_10.getResource();
-    this.jedis11 = this.pool_11.getResource();
-    this.jedis12 = this.pool_12.getResource();
-    this.jedis13 = this.pool_13.getResource();
-    this.jedis14 = this.pool_14.getResource();
-    this.jedis15 = this.pool_15.getResource();
 
 
     this.get_size = 0;
+    this.Redis_Connection = true;
+    this.sortedSuffix = new ArrayList<SeqNoSuffixOffset>(GROUP_SIZE);
     this.seqNumber = new LongWritable();
     this.suffixOffset = new Text();
 
@@ -302,6 +290,26 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
     @Override
     public void reduce(IntWritable key, Iterable<LongWritable> values, Context context) throws IOException, InterruptedException {
     //public void reduce(LongWritable key, Iterable<LongWritable> values, Context context) throws IOException, InterruptedException {
+      if(this.Redis_Connection){
+        this.jedis0 = this.pool_0.getResource();
+        this.jedis1 = this.pool_1.getResource();
+        this.jedis2 = this.pool_2.getResource();
+        this.jedis3 = this.pool_3.getResource();
+        this.jedis4 = this.pool_4.getResource();
+        this.jedis5 = this.pool_5.getResource();
+        this.jedis6 = this.pool_6.getResource();
+        this.jedis7 = this.pool_7.getResource();
+        this.jedis8 = this.pool_8.getResource();
+        this.jedis9 = this.pool_9.getResource();
+        this.jedis10 = this.pool_10.getResource();
+        this.jedis11 = this.pool_11.getResource();
+        this.jedis12 = this.pool_12.getResource();
+        this.jedis13 = this.pool_13.getResource();
+        this.jedis14 = this.pool_14.getResource();
+        this.jedis15 = this.pool_15.getResource();
+
+        this.Redis_Connection = false;
+      }
 
       long start = System.currentTimeMillis();
       long end;
@@ -328,80 +336,47 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
           reduce_group_size++;
         }
       }
-      //else if(key.get() <= 390620 && key.get()%5 == 0){
-      //else if(key.get() <= 9765620 && key.get()%5 == 0){
-      //else if(normal_case && key.get() <= 244140620 && key.get()%5 == 0){
-      //else if(key.get() <= 244140620 && key.get()%5 == 0){
-      //else if(key.get() <= 1220703120 && key.get()%5 == 0){
-      //else if(key.get() <= 48828120 && key.get()%5 == 0){
-      //else if(key.get() <= 3120 && key.get()%5 == 0){
-      //else if(key.get()%625 == 0 && isLargeGrain(key.get()) ){
       else if(isLargeGrain(key.get()) ){
         /*** process the accumulated suffixes to preserve the order ***/
         if(this.get_size > 0){
-          batchProcess(context, START_TO_SORT); 
+          batchProcess(context, START_TO_SORT);
           this.get_size = 0;
         }
 
 
-        if(key.get()%625 == 0){
-       
-          decoded_prefix = decodePrefix(key.get(), NUM_PREFIX);
+        StringBuilder suffix_offset;
 
-          StringBuilder tmp_suffix_offset = new StringBuilder(decoded_prefix);;
-          for(LongWritable value: values){
-            offset = (int)(value.get()%1000L);
-            tmp_suffix_offset.append(" ");
-            tmp_suffix_offset.append(offset);
-
-            //context.write(new LongWritable((value.get()-offset)/1000L), new Text(tmp_suffix_offset.toString()));
-            this.seqNumber.set((value.get()-offset)/1000L);
-            this.suffixOffset.set(tmp_suffix_offset.toString());
-            context.write(this.seqNumber, this.suffixOffset);
-
-            tmp_suffix_offset.delete(decoded_prefix.length(), tmp_suffix_offset.length());
-            reduce_group_size++;
-          }
-        }
-        else{
-          StringBuilder suffix_offset;
-
-          boolean multiple_get = false;
-          for(LongWritable value: values){
-            offset = (int)(value.get()%1000L);
-            mem_key = new Long((value.get()-offset)/1000L);
-            
-            dispatchKeyValuePair(mem_key, new Integer(offset));
-            //this.groupKeys.add(mem_key);
-            //this.groupValues.add(new Integer(offset));
-            
-            reduce_group_size++;
-            this.get_size++;
+        boolean multiple_get = false;
+        for(LongWritable value: values){
+          offset = (int)(value.get()%1000L);
+          mem_key = new Long((value.get()-offset)/1000L);
+          
+          dispatchKeyValuePair(mem_key, new Integer(offset));
+          //this.groupKeys.add(mem_key);
+          //this.groupValues.add(new Integer(offset));
+          
+          reduce_group_size++;
+          this.get_size++;
  
-            if(this.get_size > GROUP_SIZE){
-              batchProcess(context, NOT_SORT_YET);
-              this.get_size = 0;
-              multiple_get = true;
-            }
-
-          }
-
-          //outlier of reduce group
-          //if(reduce_group_size > GROUP_SIZE)
-          //  sLogger.info("Key "+decodePrefix(key.get(), NUM_PREFIX)+"for Reduce group size: "+reduce_group_size);
-
-                  
-          if(multiple_get){
-            batchProcess(context, START_TO_SORT);
+          if(this.get_size > GROUP_SIZE){
+            batchProcess(context, NOT_SORT_YET);
             this.get_size = 0;
+            multiple_get = true;
           }
-   
 
         }
 
-      }
-      else if(key.get()%78125== 0){
+        //outlier of reduce group
+        //if(reduce_group_size > GROUP_SIZE)
+        //  sLogger.info("Key "+decodePrefix(key.get(), NUM_PREFIX)+"for Reduce group size: "+reduce_group_size);
 
+                
+        if(multiple_get){
+          batchProcess(context, START_TO_SORT);
+          this.get_size = 0;
+        }
+      }
+      else if(key.get()%78125 == 0){
         /*** process the accumulated suffixes to preserve the order ***/
         if(this.get_size > 0){
           batchProcess(context, START_TO_SORT);
@@ -483,37 +458,37 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
       for(Integer item : this.scramble_order){
         switch(item.intValue()){
           case 1:  if(this.bulkOfKeys_1.size() != 0)
-                     this.bulkOfValues_1  = mGetRange(this.bulkOfKeys_1,  this.bulkOfOffsets_1,   jedis1); break;
+                     this.bulkOfValues_1  = mGetSuffix(this.bulkOfKeys_1,  this.bulkOfOffsets_1,   jedis1); break;
           case 2:  if(this.bulkOfKeys_2.size() != 0)
-                     this.bulkOfValues_2  = mGetRange(this.bulkOfKeys_2,  this.bulkOfOffsets_2,   jedis2); break;
+                     this.bulkOfValues_2  = mGetSuffix(this.bulkOfKeys_2,  this.bulkOfOffsets_2,   jedis2); break;
           case 3:  if(this.bulkOfKeys_3.size() != 0)
-                     this.bulkOfValues_3  = mGetRange(this.bulkOfKeys_3,  this.bulkOfOffsets_3,   jedis3); break;
+                     this.bulkOfValues_3  = mGetSuffix(this.bulkOfKeys_3,  this.bulkOfOffsets_3,   jedis3); break;
           case 4:  if(this.bulkOfKeys_4.size() != 0)
-                     this.bulkOfValues_4  = mGetRange(this.bulkOfKeys_4,  this.bulkOfOffsets_4,   jedis4); break;
+                     this.bulkOfValues_4  = mGetSuffix(this.bulkOfKeys_4,  this.bulkOfOffsets_4,   jedis4); break;
           case 5:  if(this.bulkOfKeys_5.size() != 0)
-                     this.bulkOfValues_5  = mGetRange(this.bulkOfKeys_5,  this.bulkOfOffsets_5,   jedis5); break;
+                     this.bulkOfValues_5  = mGetSuffix(this.bulkOfKeys_5,  this.bulkOfOffsets_5,   jedis5); break;
           case 6:  if(this.bulkOfKeys_6.size() != 0)
-                     this.bulkOfValues_6  = mGetRange(this.bulkOfKeys_6,  this.bulkOfOffsets_6,   jedis6); break;
+                     this.bulkOfValues_6  = mGetSuffix(this.bulkOfKeys_6,  this.bulkOfOffsets_6,   jedis6); break;
           case 7:  if(this.bulkOfKeys_7.size() != 0)
-                     this.bulkOfValues_7  = mGetRange(this.bulkOfKeys_7,  this.bulkOfOffsets_7,   jedis7); break;
+                     this.bulkOfValues_7  = mGetSuffix(this.bulkOfKeys_7,  this.bulkOfOffsets_7,   jedis7); break;
           case 8:  if(this.bulkOfKeys_8.size() != 0)
-                     this.bulkOfValues_8  = mGetRange(this.bulkOfKeys_8,  this.bulkOfOffsets_8,   jedis8); break;
+                     this.bulkOfValues_8  = mGetSuffix(this.bulkOfKeys_8,  this.bulkOfOffsets_8,   jedis8); break;
           case 9:  if(this.bulkOfKeys_9.size() != 0)
-                     this.bulkOfValues_9  = mGetRange(this.bulkOfKeys_9,  this.bulkOfOffsets_9,   jedis9); break;
+                     this.bulkOfValues_9  = mGetSuffix(this.bulkOfKeys_9,  this.bulkOfOffsets_9,   jedis9); break;
           case 10: if(this.bulkOfKeys_10.size() != 0)
-                     this.bulkOfValues_10 = mGetRange(this.bulkOfKeys_10, this.bulkOfOffsets_10,  jedis10); break;
+                     this.bulkOfValues_10 = mGetSuffix(this.bulkOfKeys_10, this.bulkOfOffsets_10,  jedis10); break;
           case 11: if(this.bulkOfKeys_11.size() != 0)
-                     this.bulkOfValues_11 = mGetRange(this.bulkOfKeys_11, this.bulkOfOffsets_11,  jedis11); break;
+                     this.bulkOfValues_11 = mGetSuffix(this.bulkOfKeys_11, this.bulkOfOffsets_11,  jedis11); break;
           case 12: if(this.bulkOfKeys_12.size() != 0)
-                     this.bulkOfValues_12 = mGetRange(this.bulkOfKeys_12, this.bulkOfOffsets_12,  jedis12); break;
+                     this.bulkOfValues_12 = mGetSuffix(this.bulkOfKeys_12, this.bulkOfOffsets_12,  jedis12); break;
           case 13: if(this.bulkOfKeys_13.size() != 0)
-                     this.bulkOfValues_13 = mGetRange(this.bulkOfKeys_13, this.bulkOfOffsets_13,  jedis13); break;
+                     this.bulkOfValues_13 = mGetSuffix(this.bulkOfKeys_13, this.bulkOfOffsets_13,  jedis13); break;
           case 14: if(this.bulkOfKeys_14.size() != 0)
-                     this.bulkOfValues_14 = mGetRange(this.bulkOfKeys_14, this.bulkOfOffsets_14,  jedis14); break;
+                     this.bulkOfValues_14 = mGetSuffix(this.bulkOfKeys_14, this.bulkOfOffsets_14,  jedis14); break;
           case 15: if(this.bulkOfKeys_15.size() != 0)
-                     this.bulkOfValues_15 = mGetRange(this.bulkOfKeys_15, this.bulkOfOffsets_15,  jedis15); break;
+                     this.bulkOfValues_15 = mGetSuffix(this.bulkOfKeys_15, this.bulkOfOffsets_15,  jedis15); break;
           default: if(this.bulkOfKeys_0.size() != 0)
-                     this.bulkOfValues_0  = mGetRange(this.bulkOfKeys_0,  this.bulkOfOffsets_0,   jedis0);   break;
+                     this.bulkOfValues_0  = mGetSuffix(this.bulkOfKeys_0,  this.bulkOfOffsets_0,   jedis0);   break;
         }
         //context.progress(); // report on progress
       }
@@ -591,10 +566,9 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
 
     }
 
-    private void getSuffixFromRead(ArrayList <SeqNoSuffixOffset> sortedSuffix,  
-                                   ArrayList <String> bulkOfKeys,
-                                   List <String> bulkOfValues,
-                                   ArrayList<Integer> bulkOfOffsets){
+    private void prepareSuffixForSort(ArrayList <String> bulkOfKeys,
+                                      List <String> bulkOfValues,
+                                      ArrayList<Integer> bulkOfOffsets){
       String read;
       String seqNo;
 
@@ -609,7 +583,7 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
         buffer.append("$");
         element.suffix = buffer.toString();
 
-        sortedSuffix.add(element);
+        this.sortedSuffix.add(element);
 
       }
     }
@@ -621,129 +595,119 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
                    + this.bulkOfKeys_8.size()+this.bulkOfKeys_9.size()+this.bulkOfKeys_10.size()+this.bulkOfKeys_11.size()
                    + this.bulkOfKeys_12.size()+this.bulkOfKeys_13.size()+this.bulkOfKeys_14.size()+this.bulkOfKeys_15.size();
 
-      ArrayList <SeqNoSuffixOffset> sortedSuffix = new ArrayList<SeqNoSuffixOffset>(capacity);
+      //ArrayList <SeqNoSuffixOffset> sortedSuffix = new ArrayList<SeqNoSuffixOffset>(capacity);
  
       long temp_startT;
       long temp_endT;
 
       
       
-      getSuffixFromRead(sortedSuffix, this.bulkOfKeys_0, this.bulkOfValues_0, this.bulkOfOffsets_0);
+      prepareSuffixForSort(this.bulkOfKeys_0, this.bulkOfValues_0, this.bulkOfOffsets_0);
       this.bulkOfKeys_0.clear();
       this.bulkOfOffsets_0.clear();
 
-      getSuffixFromRead(sortedSuffix, this.bulkOfKeys_1, this.bulkOfValues_1, this.bulkOfOffsets_1);
+      prepareSuffixForSort(this.bulkOfKeys_1, this.bulkOfValues_1, this.bulkOfOffsets_1);
       this.bulkOfKeys_1.clear();
       this.bulkOfOffsets_1.clear();
 
-      getSuffixFromRead(sortedSuffix, this.bulkOfKeys_2, this.bulkOfValues_2, this.bulkOfOffsets_2);
+      prepareSuffixForSort(this.bulkOfKeys_2, this.bulkOfValues_2, this.bulkOfOffsets_2);
       this.bulkOfKeys_2.clear();
       this.bulkOfOffsets_2.clear();
 
-      getSuffixFromRead(sortedSuffix, this.bulkOfKeys_3, this.bulkOfValues_3, this.bulkOfOffsets_3);
+      prepareSuffixForSort(this.bulkOfKeys_3, this.bulkOfValues_3, this.bulkOfOffsets_3);
       this.bulkOfKeys_3.clear();
       this.bulkOfOffsets_3.clear();
 
-      getSuffixFromRead(sortedSuffix, this.bulkOfKeys_4, this.bulkOfValues_4, this.bulkOfOffsets_4);
+      prepareSuffixForSort(this.bulkOfKeys_4, this.bulkOfValues_4, this.bulkOfOffsets_4);
       this.bulkOfKeys_4.clear();
       this.bulkOfOffsets_4.clear();
 
-      getSuffixFromRead(sortedSuffix, this.bulkOfKeys_5, this.bulkOfValues_5, this.bulkOfOffsets_5);
+      prepareSuffixForSort(this.bulkOfKeys_5, this.bulkOfValues_5, this.bulkOfOffsets_5);
       this.bulkOfKeys_5.clear();
       this.bulkOfOffsets_5.clear();
 
-      getSuffixFromRead(sortedSuffix, this.bulkOfKeys_6, this.bulkOfValues_6, this.bulkOfOffsets_6);
+      prepareSuffixForSort(this.bulkOfKeys_6, this.bulkOfValues_6, this.bulkOfOffsets_6);
       this.bulkOfKeys_6.clear();
       this.bulkOfOffsets_6.clear();
-      getSuffixFromRead(sortedSuffix, this.bulkOfKeys_7, this.bulkOfValues_7, this.bulkOfOffsets_7);
+      prepareSuffixForSort(this.bulkOfKeys_7, this.bulkOfValues_7, this.bulkOfOffsets_7);
       this.bulkOfKeys_7.clear();
       this.bulkOfOffsets_7.clear();
 
-      getSuffixFromRead(sortedSuffix, this.bulkOfKeys_8, this.bulkOfValues_8, this.bulkOfOffsets_8);
+      prepareSuffixForSort(this.bulkOfKeys_8, this.bulkOfValues_8, this.bulkOfOffsets_8);
       this.bulkOfKeys_8.clear();
       this.bulkOfOffsets_8.clear();
 
-      getSuffixFromRead(sortedSuffix, this.bulkOfKeys_9, this.bulkOfValues_9, this.bulkOfOffsets_9);
+      prepareSuffixForSort(this.bulkOfKeys_9, this.bulkOfValues_9, this.bulkOfOffsets_9);
       this.bulkOfKeys_9.clear();
       this.bulkOfOffsets_9.clear();
 
-      getSuffixFromRead(sortedSuffix, this.bulkOfKeys_10, this.bulkOfValues_10, this.bulkOfOffsets_10);
+      prepareSuffixForSort(this.bulkOfKeys_10, this.bulkOfValues_10, this.bulkOfOffsets_10);
       this.bulkOfKeys_10.clear();
       this.bulkOfOffsets_10.clear();
 
-      getSuffixFromRead(sortedSuffix, this.bulkOfKeys_11, this.bulkOfValues_11, this.bulkOfOffsets_11);
+      prepareSuffixForSort(this.bulkOfKeys_11, this.bulkOfValues_11, this.bulkOfOffsets_11);
       this.bulkOfKeys_11.clear();
       this.bulkOfOffsets_11.clear();
 
-      getSuffixFromRead(sortedSuffix, this.bulkOfKeys_12, this.bulkOfValues_12, this.bulkOfOffsets_12);
+      prepareSuffixForSort(this.bulkOfKeys_12, this.bulkOfValues_12, this.bulkOfOffsets_12);
       this.bulkOfKeys_12.clear();
       this.bulkOfOffsets_12.clear();
 
-      getSuffixFromRead(sortedSuffix, this.bulkOfKeys_13, this.bulkOfValues_13, this.bulkOfOffsets_13);
+      prepareSuffixForSort(this.bulkOfKeys_13, this.bulkOfValues_13, this.bulkOfOffsets_13);
       this.bulkOfKeys_13.clear();
       this.bulkOfOffsets_13.clear();
 
-      getSuffixFromRead(sortedSuffix, this.bulkOfKeys_14, this.bulkOfValues_14, this.bulkOfOffsets_14);
+      prepareSuffixForSort(this.bulkOfKeys_14, this.bulkOfValues_14, this.bulkOfOffsets_14);
       this.bulkOfKeys_14.clear();
       this.bulkOfOffsets_14.clear();
 
-      getSuffixFromRead(sortedSuffix, this.bulkOfKeys_15, this.bulkOfValues_15, this.bulkOfOffsets_15);
+      prepareSuffixForSort(this.bulkOfKeys_15, this.bulkOfValues_15, this.bulkOfOffsets_15);
       this.bulkOfKeys_15.clear();
       this.bulkOfOffsets_15.clear();
 
       if(start_to_sort){
         temp_startT = System.currentTimeMillis();
-        Collections.sort(sortedSuffix);       
+        Collections.sort(this.sortedSuffix);       
         temp_endT = System.currentTimeMillis();
         //sLogger.info("Sorting time: "+(temp_endT-temp_startT)+" ms");
  
-        for(SeqNoSuffixOffset item: sortedSuffix){
+        for(SeqNoSuffixOffset item: this.sortedSuffix){
           this.seqNumber.set(item.seqNo);
           this.suffixOffset.set(item.toString());
           context.write(this.seqNumber, this.suffixOffset);
         }
           	
         //force clean
-        sortedSuffix.clear();
+        this.sortedSuffix.clear();
       }
 
       
     }
 
     private boolean isLargeGrain(int encodedPrefix){
-      //10 chars
-      //3
-      if(encodedPrefix == 356038125)
+      //13 chars
+      if(encodedPrefix == 356038411)
         return true;
     
-      //10
-      if(encodedPrefix == 559488750)
+      if(encodedPrefix == 559488932)
         return true;
 
-      //21
-      if(encodedPrefix == 966389375)
+      if(encodedPrefix == 966389973)
         return true;
 
-      //28
-      if(encodedPrefix == 1169840000)
+      if(encodedPrefix == 1169840494)
         return true;
 
       return false;
     }
 
-    public static List<String> mGetRange(List<String> keys, List<Integer> starts, Jedis jedis) {
+    public static List<String> mGetSuffix(List<String> keys, List<Integer> starts, Jedis jedis) {
       assert keys.size() == starts.size();
 
-      //inR wrong number of argume
-      //int size_index = 0;
-      //List<String> mgetsuffix_result = new ArrayList<String>(size);
       long [] suffix_start = new long[keys.size()];
       for(int i=0;i<keys.size();i++)
         suffix_start[i] = starts.get(i).longValue();
 
-      //sLogger.info("hhwu DEBUG: keys size: "+keys.size());
-      //sLogger.info("hhwu DEBUG: start size: "+starts.size());
-      //return jedis.mgetsuffix(suffix_key, suffix_start);
       return jedis.mgetsuffix(keys.toArray(new String[0]), suffix_start);
       
     }

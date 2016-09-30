@@ -35,8 +35,7 @@ import redis.clients.jedis.JedisPoolConfig;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
 public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWritable> {
-  static final int NUM_PREFIX_10 = 10;
-  static final int NUM_PREFIX_12 = 13;
+  static final int NUM_PREFIX = 13;
 
   private static final Logger sLogger = Logger.getLogger(BioMapper.class.getName());
 
@@ -109,7 +108,7 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
     Jedis jedis9  = new Jedis("192.168.100.111", 6379, 300000);
     Jedis jedis10 = new Jedis("192.168.100.119", 6379, 300000);
     Jedis jedis11 = new Jedis("192.168.100.113", 6379, 300000);
-    Jedis jedis12 = new Jedis("192.168.100.114", 6379, 300000);
+    Jedis jedis12 = new Jedis("192.168.100.121", 6379, 300000);
     Jedis jedis13 = new Jedis("192.168.100.115", 6379, 300000);
     Jedis jedis14 = new Jedis("192.168.100.116", 6379, 300000);
     Jedis jedis15 = new Jedis("192.168.100.117", 6379, 300000);
@@ -143,7 +142,11 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
 
     StringBuilder buffer = new StringBuilder();
     buffer.append(seqNumber);
-    buffer.append(result[0].charAt(1));
+
+    /*** extract the first two characters and append it to seq num as the seqId ***/
+    //buffer.append(result[0].charAt(1));
+    buffer.append(result[0].substring(0,2));
+
     String seqId = buffer.toString();
 
     int sel = (int)(seqNumber%16L);
@@ -177,11 +180,7 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
 
       for(int i=0;i< suffix_str.length();i++){
         prefix_DNA = suffix_str.substring(i);
-
-        if(isLargeGrain(profilingDNASeq(prefix_DNA, 10)))
-          context.write(new IntWritable(profilingDNASeq(prefix_DNA, 13)), new LongWritable(seqNumberAndOffset+i));
-        else
-          context.write(new IntWritable(encodeDNASeqInDiffGrain(prefix_DNA, 10, 13)), new LongWritable(seqNumberAndOffset+i));
+        context.write(new IntWritable(profilingDNASeq(prefix_DNA, NUM_PREFIX)), new LongWritable(seqNumberAndOffset+i));
       }
       //context.write(new IntWritable(0), new LongWritable(seqNumberAndOffset+suffix_str.length()));
 
@@ -190,27 +189,6 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
     }
 
 
-  }
-
-  private boolean isLargeGrain(int encodedPrefix){
-    //10 chars
-    //3
-    if(encodedPrefix == 2848307)
-      return true;
-  
-    //10
-    if(encodedPrefix == 4475911)
-      return true;
-
-    //21
-    if(encodedPrefix == 7731119)
-      return true;
-
-    //28
-    if(encodedPrefix == 9358723)
-      return true;
-
-    return false;
   }
 
   private int profilingDNASeq(String seq, int num_prefix){
