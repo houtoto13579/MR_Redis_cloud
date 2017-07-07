@@ -11,7 +11,10 @@ The draft of this research work can be found in https://arxiv.org/abs/1705.04789
     $ ./makefile                   //It contains the information of the needed libraries during compiling
   
 ## Redis that supports mgetsuffix command
+    You need to install Redis on the nodes that can serve the key-value access.
     The command mgetsuffix can reduce the communication overhead. 
     https://github.com/hckuo/redis/tree/add-mgetsuffix-command
 ## The library of Jedis that supports mgetsuffix command
+    This is the client library that helps the mappers and reducers to communicate with Redis.
+    https://github.com/hckuo/jedis/tree/add-mgetsuffix-command
     
