@@ -1,5 +1,6 @@
-import java.util.*;
+package sinica.iis;
 
+import java.util.Comparator;
 
 public class SeqNoSuffixOffset implements Comparator<SeqNoSuffixOffset>, Comparable<SeqNoSuffixOffset>{
   public long seqNo; 

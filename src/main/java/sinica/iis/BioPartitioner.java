@@ -1,3 +1,5 @@
+package sinica.iis;
+
 import org.apache.hadoop.mapreduce.*;
 import org.apache.hadoop.io.*;
 

@@ -1,46 +1,21 @@
+package sinica.iis;
+
 import java.io.IOException;
-import java.net.URI;
-
-import org.apache.hadoop.io.*;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.fs.Path;
-
-import java.util.Map;
-import java.util.HashMap;
 import java.util.ArrayList;
-
-// for log4j system
-import org.apache.log4j.Logger;
-
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 
-//memcached
-import net.spy.memcached.MemcachedClient;
-import net.spy.memcached.AddrUtil;
-import net.spy.memcached.BinaryConnectionFactory;
-import java.net.InetSocketAddress;
-
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Reducer;
+// for log4j system
+import org.apache.log4j.Logger;
 
 //redis
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.Pipeline;
-import redis.clients.jedis.Response;
-
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
-
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 
 public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable, Text> {
