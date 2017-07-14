@@ -25,7 +25,6 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
   static final int MGET_SUFFIX_SIZE = 100000;
   static final boolean NOT_SORT_YET = false;
   static final boolean START_TO_SORT = true;
-  static int numNodes = 16;
 
   private  final Logger sLogger = Logger.getLogger(BioReducer.class.getName());
 
@@ -38,9 +37,12 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
   private ArrayList<ArrayList<Integer>> bulksOfOffsets;
   private ArrayList<ArrayList<String>> bulksOfValues;
 
-  private static String[] jedisHosts = {"140.109.17.134"
-      , "192.168.100.102", "192.168.100.112", "192.168.100.105", "192.168.100.106", "192.168.100.107", "192.168.100.118", "192.168.100.109", "192.168.100.110", "192.168.100.111"
-      , "192.168.100.119", "192.168.100.113", "192.168.100.121", "192.168.100.115", "192.168.100.116", "192.168.100.117"};
+  // static int numNodes = 16;
+  // private static String[] jedisHosts = {"140.109.17.134"
+  //     , "192.168.100.102", "192.168.100.112", "192.168.100.105", "192.168.100.106", "192.168.100.107", "192.168.100.118", "192.168.100.109", "192.168.100.110", "192.168.100.111"
+  //     , "192.168.100.119", "192.168.100.113", "192.168.100.121", "192.168.100.115", "192.168.100.116", "192.168.100.117"};
+  private static int numNodes = 3;
+  private static String[] jedisHosts = {"slave1", "slave2", "slave3"};
   private ArrayList <Integer> scramble_order;
 
 
@@ -62,6 +64,11 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
     } else {
       this.sLogger.info("No specification of jedis hosts and number of nodes, using in-code config.");
     }
+    this.jedisPoolConfigs = new ArrayList<>();
+    this.jedisPools = new ArrayList<>();
+    this.bulksOfKeys = new ArrayList<>();
+    this.bulksOfOffsets = new ArrayList<>();
+    this.bulksOfValues = new ArrayList<>();
     
     for(int i = 0; i < numNodes; i++) {
       JedisPoolConfig jpc = new JedisPoolConfig();
@@ -76,14 +83,13 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
 
 
     this.get_size = 0;
-    this.Redis_Connection = true;
     this.sortedSuffix = new ArrayList<SeqNoSuffixOffset>(GROUP_SIZE);
     this.seqNumber = new LongWritable();
     this.suffixOffset = new Text();
 
 
-    this.scramble_order = new  ArrayList <Integer>(16);
-    for(int i=0;i<16;i++)
+    this.scramble_order = new  ArrayList <Integer>(numNodes);
+    for(int i=0;i<numNodes;i++)
       this.scramble_order.add(new Integer(i));
 
   }
@@ -107,11 +113,9 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
     @Override
     public void reduce(IntWritable key, Iterable<LongWritable> values, Context context) throws IOException, InterruptedException {
       /*** initialize the jedis connections***/
-      if(this.Redis_Connection){
-        for(int i = 0; i < numNodes; i++) {
-          jedisClients.add(jedisPools.get(i).getResource());
-        }
-        this.Redis_Connection = false;
+      jedisClients = new ArrayList<>();
+      for(int i = 0; i < numNodes; i++) {
+        jedisClients.add(jedisPools.get(i).getResource());
       }
 
       long start = System.currentTimeMillis();
@@ -255,7 +259,10 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
 
       for(int i : this.scramble_order){
         if (this.bulksOfKeys.get(i).size() != 0) {
-          this.bulksOfValues.set(i, (ArrayList<String>) mGetSuffix(this.bulksOfKeys.get(i), this.bulksOfOffsets.get(i), jedisClients.get(i))); 
+          this.bulksOfValues.set(i
+                      , (ArrayList<String>) mGetSuffix(this.bulksOfKeys.get(i)
+                      , this.bulksOfOffsets.get(i)
+                      , jedisClients.get(i))); 
         }
         //context.progress(); // report on progress
       }
@@ -278,7 +285,7 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
 
     private void dispatchKeyValuePair(Long f_key, Integer f_value){
       /*** Note that 100L means 2 characters  ***/
-      int sel = (int)((f_key.longValue()/100L)%16L);
+      int sel = (int)((f_key.longValue()/100L)%numNodes);
       this.bulksOfKeys.get(sel).add(f_key.toString());
       this.bulksOfOffsets.get(sel).add(f_value);
     }

@@ -17,11 +17,14 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
   static final int NUM_PREFIX = 13;
 
   private final Logger sLogger = Logger.getLogger(BioMapper.class.getName());
-  private static int numNodes = 16; 
-  private static String[] jedisHosts = {"140.109.17.134"
-      , "192.168.100.102", "192.168.100.112", "192.168.100.105", "192.168.100.106", "192.168.100.107", "192.168.100.118", "192.168.100.109", "192.168.100.110", "192.168.100.111"
-      , "192.168.100.119", "192.168.100.113", "192.168.100.121", "192.168.100.115", "192.168.100.116", "192.168.100.117"};
+  // private static int numNodes = 16; 
+  // private static String[] jedisHosts = {"140.109.17.134"
+  //     , "192.168.100.102", "192.168.100.112", "192.168.100.105", "192.168.100.106", "192.168.100.107", "192.168.100.118", "192.168.100.109", "192.168.100.110", "192.168.100.111"
+  //     , "192.168.100.119", "192.168.100.113", "192.168.100.121", "192.168.100.115", "192.168.100.116", "192.168.100.117"};
  
+  private static int numNodes = 3;
+  private static String[] jedisHosts = {"slave1", "slave2", "slave3"};
+
   private ArrayList<ArrayList<String>> bulksOfKeys;
 
 
@@ -45,7 +48,9 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
 
   protected void cleanup(Context context) throws IOException, InterruptedException {
     for (int i = 0; i < numNodes; i++) {
-      new Jedis(jedisHosts[i], 6379, 300000).mset(bulksOfKeys.toArray(new String[0]));
+      if(bulksOfKeys.get(i).size() > 0) {
+        new Jedis(jedisHosts[i], 6379, 300000).mset(bulksOfKeys.get(i).toArray(new String[0]));
+      }
     }
   }
 
@@ -68,7 +73,7 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
 
     String seqId = buffer.toString();
 
-    int sel = (int)(seqNumber%16L);
+    int sel = (int)(seqNumber%numNodes);
     
     bulksOfKeys.get(sel).add(seqId);
     bulksOfKeys.get(sel).add(result[1]);

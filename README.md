@@ -12,8 +12,8 @@ sudo apt-get install maven
 ### Install project dependencies
 `mvn clean install`
 ### Build Project into jar
-`mvn package`
-> The generated jar is located in ${project.basdir}/target/${artifactId}-${version}.jar
+`mvn clean package`
+> The generated jar is located in ${project.basdir}/target/${artifactId}-${version}-jar-with-dependencies.jar
 ## Hadoop
 ### Run
 `hadoop jar ${artifactId}-${version}.jar ${job-name} ${input-folder} ${output-folder}`
