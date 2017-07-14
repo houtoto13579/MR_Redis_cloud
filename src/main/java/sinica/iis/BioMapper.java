@@ -2,7 +2,6 @@ package sinica.iis;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
@@ -17,26 +16,36 @@ import redis.clients.jedis.Jedis;
 public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWritable> {
   static final int NUM_PREFIX = 13;
 
-  private static final Logger sLogger = Logger.getLogger(BioMapper.class.getName());
-  private static final int NUM_BULKS = 15;
-  private static final ArrayList<String> jedisHosts = new ArrayList<>(Arrays.asList("140.109.17.134"
+  private final Logger sLogger = Logger.getLogger(BioMapper.class.getName());
+  private static int numNodes = 16; 
+  private static String[] jedisHosts = {"140.109.17.134"
       , "192.168.100.102", "192.168.100.112", "192.168.100.105", "192.168.100.106", "192.168.100.107", "192.168.100.118", "192.168.100.109", "192.168.100.110", "192.168.100.111"
-      , "192.168.100.119", "192.168.100.113", "192.168.100.121", "192.168.100.116", "192.168.100.117"));
+      , "192.168.100.119", "192.168.100.113", "192.168.100.121", "192.168.100.115", "192.168.100.116", "192.168.100.117"};
+ 
   private ArrayList<ArrayList<String>> bulksOfKeys;
 
 
   @Override
   protected void setup(Context context) throws IOException, InterruptedException {
+    if(System.getProperty("JedisHosts") != null && System.getProperty("NumNodes") != null) {
+      String[] hosts = System.getProperty("JedisHosts").split(",");
+      Integer numNodes = Integer.valueOf(System.getProperty("NumNodes"));
+      BioMapper.jedisHosts = hosts;
+      BioMapper.numNodes = numNodes;
+      sLogger.info("Found specification of jedis hosts: " + hosts.toString() + " and number of nodes: " + numNodes + " .");
+    } else {
+      sLogger.info("No specification of jedis hosts and number of nodes, using in-code config.");
+    }
     this.bulksOfKeys = new ArrayList<ArrayList<String>>();
-  	  for(int i = 0; i < NUM_BULKS; i++) {
+  	  for(int i = 0; i < numNodes; i++) {
   	    this.bulksOfKeys.add(new ArrayList<String>());
   	  }
   }
 
 
   protected void cleanup(Context context) throws IOException, InterruptedException {
-    for (int i = 0; i < NUM_BULKS; i++) {
-      new Jedis(jedisHosts.get(i), 6379, 300000).mset(bulksOfKeys.toArray(new String[0]));
+    for (int i = 0; i < numNodes; i++) {
+      new Jedis(jedisHosts[i], 6379, 300000).mset(bulksOfKeys.toArray(new String[0]));
     }
   }
 
