@@ -17,10 +17,12 @@ public class SuffixArrayRun{
           System.err.printf("Usage: SuffixArrayRun <input> <output>\n");
           System.exit(-1);
         }
+        
+        Configuration conf = new Configuration();
+        conf.set("JEDIS_HOSTS", "localhost");
+        conf.setInt("NUM_NODES", 1);
 
-
-        Job job = new Job(new Configuration());
-        Configuration conf = job.getConfiguration();
+        Job job = Job.getInstance(conf);
         // Specify various job-specific parameters     
         job.setJobName("Run SuffixArray for Bio Info (64) 160w CMS GC MGET Suffix");
         //job.setJobName("Run SuffixArray for Bio Info (32) 160W CMS AlwaysTenure NewRatio=5");
@@ -29,7 +31,6 @@ public class SuffixArrayRun{
      
         job.setMapperClass(BioMapper.class);
         job.setMapOutputKeyClass(IntWritable.class);
-        //job.setMapOutputKeyClass(LongWritable.class);
         job.setMapOutputValueClass(LongWritable.class);
 
         job.setReducerClass(BioReducer.class);
@@ -41,7 +42,6 @@ public class SuffixArrayRun{
         job.setOutputFormatClass(TextOutputFormat.class);
 
         job.setPartitionerClass(BioPartitioner.class);
-        job.setNumReduceTasks(64);
 
         FileInputFormat.addInputPath(job, new Path(args[0]));
         

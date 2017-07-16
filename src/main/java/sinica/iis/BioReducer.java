@@ -9,12 +9,12 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.conf.Configuration; 
 // for log4j system
 import org.apache.log4j.Logger;
 
 //redis
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 
@@ -26,25 +26,16 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
   static final boolean NOT_SORT_YET = false;
   static final boolean START_TO_SORT = true;
 
-  private  final Logger sLogger = Logger.getLogger(BioReducer.class.getName());
+  private final Logger sLogger = Logger.getLogger(BioReducer.class.getName());
 
   private boolean Redis_Connection;
   
-  private ArrayList<JedisPool> jedisPools;
-  private ArrayList<JedisPoolConfig> jedisPoolConfigs;
   private ArrayList<Jedis> jedisClients;
   private ArrayList<ArrayList<String>> bulksOfKeys;
   private ArrayList<ArrayList<Integer>> bulksOfOffsets;
   private ArrayList<ArrayList<String>> bulksOfValues;
 
-  // static int numNodes = 16;
-  // private static String[] jedisHosts = {"140.109.17.134"
-  //     , "192.168.100.102", "192.168.100.112", "192.168.100.105", "192.168.100.106", "192.168.100.107", "192.168.100.118", "192.168.100.109", "192.168.100.110", "192.168.100.111"
-  //     , "192.168.100.119", "192.168.100.113", "192.168.100.121", "192.168.100.115", "192.168.100.116", "192.168.100.117"};
-  private static int numNodes = 3;
-  private static String[] jedisHosts = {"slave1", "slave2", "slave3"};
   private ArrayList <Integer> scramble_order;
-
 
   private ArrayList <SeqNoSuffixOffset> sortedSuffix;
   private int get_size;
@@ -52,41 +43,31 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
   private LongWritable seqNumber;
   private Text suffixOffset;
  
+  private static int numNodes;
+  private static String[] redisHosts;
+
   @Override
   protected void setup(Context context) throws IOException, InterruptedException {
     
-    if(System.getProperty("JedisHosts") != null && System.getProperty("NumNodes") != null) {
-      String[] hosts = System.getProperty("JedisHosts").split(",");
-      Integer numNodes = Integer.valueOf(System.getProperty("NumNodes"));
-      BioReducer.jedisHosts = hosts;
-      BioReducer.numNodes = numNodes;
-      this.sLogger.info("Found specification of jedis hosts: " + hosts.toString() + " and number of nodes: " + numNodes + " .");
-    } else {
-      this.sLogger.info("No specification of jedis hosts and number of nodes, using in-code config.");
-    }
-    this.jedisPoolConfigs = new ArrayList<>();
-    this.jedisPools = new ArrayList<>();
+    Configuration job = context.getConfiguration();
+    BioReducer.numNodes = job.getInt("NUM_NODES", 1);
+    BioReducer.redisHosts = job.get("REDIS_HOSTS", "localhost").split(",");
+    sLogger.info("The number of node is " + numNodes);
+    sLogger.info("The redis hosts are " + redisHosts);
     this.bulksOfKeys = new ArrayList<>();
     this.bulksOfOffsets = new ArrayList<>();
     this.bulksOfValues = new ArrayList<>();
     
     for(int i = 0; i < numNodes; i++) {
-      JedisPoolConfig jpc = new JedisPoolConfig();
-      jpc.setMaxTotal(64);
-      this.jedisPoolConfigs.add(jpc);
-      this.jedisPools.add(new JedisPool(jpc, jedisHosts[i], 6379, TIME_OUT));
       this.bulksOfKeys.add(new ArrayList<String>(MGET_SUFFIX_SIZE));
       this.bulksOfOffsets.add(new ArrayList<Integer>(MGET_SUFFIX_SIZE));
       this.bulksOfValues.add(new ArrayList<String>());
     }
 
-
-
     this.get_size = 0;
     this.sortedSuffix = new ArrayList<SeqNoSuffixOffset>(GROUP_SIZE);
     this.seqNumber = new LongWritable();
     this.suffixOffset = new Text();
-
 
     this.scramble_order = new  ArrayList <Integer>(numNodes);
     for(int i=0;i<numNodes;i++)
@@ -104,8 +85,8 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
     if(groupKeys_size > 0){
       batchProcess(context, START_TO_SORT);
       
-      for(JedisPool jp : jedisPools) {
-        jp.destroy();
+      for(Jedis j : jedisClients) {
+          j.quit();
       }
     }
   }
@@ -115,7 +96,7 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
       /*** initialize the jedis connections***/
       jedisClients = new ArrayList<>();
       for(int i = 0; i < numNodes; i++) {
-        jedisClients.add(jedisPools.get(i).getResource());
+        jedisClients.add(new Jedis(redisHosts[i]));
       }
 
       long start = System.currentTimeMillis();
