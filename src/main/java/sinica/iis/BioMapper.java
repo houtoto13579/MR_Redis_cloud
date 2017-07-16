@@ -29,6 +29,8 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
     Configuration job = context.getConfiguration();
     BioMapper.numNodes = job.getInt("NUM_NODES", 1);
     BioMapper.redisHosts = job.get("REDIS_HOSTS", "localhost").split(",");
+    sLogger.info("The number of node is " + numNodes);
+    sLogger.info("The redis hosts are " + redisHosts);
     this.bulksOfKeys = new ArrayList<ArrayList<String>>();
     for(int i = 0; i < numNodes; i++) {
       this.bulksOfKeys.add(new ArrayList<String>());

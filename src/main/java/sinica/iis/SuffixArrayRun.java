@@ -19,8 +19,8 @@ public class SuffixArrayRun{
         }
         
         Configuration conf = new Configuration();
-        conf.set("JEDIS_HOSTS", "localhost");
-        conf.setInt("NUM_NODES", 1);
+        conf.set("REDIS_HOSTS", "slave1,slave2,slave3");
+        conf.setInt("NUM_NODES", 3);
 
         Job job = Job.getInstance(conf);
         // Specify various job-specific parameters     
