@@ -36,4 +36,20 @@ sudo apt-get install maven
 ## The library of Jedis that supports mgetsuffix command
     This is the client library that helps the mappers and reducers to communicate with Redis.
     https://github.com/hckuo/jedis/tree/add-mgetsuffix-command
+
+## Overall execution
+```shell
+mvn clean package && hadoop fs -rm -r -f /output_1M && hadoop jar target/MR_Redis-1.0-SNAPSHOT-jar-with-dependencies.jar sinica.iis.SuffixArrayRun /input_1M /output_1M
+```
+
+## Validating(Testing)
+
+Change the directory in validate.py before using it.
+
+After that, simply input:
+```shell
+    python validate.py
+```
+
+However, the sequence made by HH is different, which 63 is the smallest.
     

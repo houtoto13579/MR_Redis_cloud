@@ -10,11 +10,12 @@ public class BioPartitioner extends Partitioner<IntWritable,LongWritable> {
 
   	boolean USING_KEY = true;
 	//int keyCount = 196;
-	//int keyCount = 19567;
-    int keyCount = 97835;
-	
+	int keyCount = 19567;
+    	//int keyCount = 97835;
+	int reducerCount=64;	
+
 	if(USING_KEY){
-		return (DNA_prefix.get()-1)*64/(keyCount);
+		return (DNA_prefix.get()-1)*reducerCount/(keyCount);
 	}
 	else{
 		if(DNA_prefix.get() <= 307181224)
