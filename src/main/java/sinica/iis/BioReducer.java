@@ -54,6 +54,8 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
   private int write_counter, sequenceInReducerCounter;
   private final boolean WRITE_ALL_PARTITION = true;
   static final int COUNTTO = 100;
+  private String previousKeySuffix;
+
 
   @Override
   protected void setup(Context context) throws IOException, InterruptedException {
@@ -66,6 +68,7 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
     this.bulksOfKeys = new ArrayList<>();
     this.bulksOfOffsets = new ArrayList<>();
     this.bulksOfValues = new ArrayList<>();
+    this.previousKeySuffix = "TTTTTTTTTTTT";
     
     for(int i = 0; i < numNodes; i++) {
       this.bulksOfKeys.add(new ArrayList<String>(MGET_SUFFIX_SIZE));
@@ -136,7 +139,7 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
           this.suffixOffset.set(tmp_suffix_offset.toString());
           
           this.write_counter += 1;
-          if(partitionCounter()){
+          if(partitionCounter("$")){
           	context.write(this.seqNumber, this.suffixOffset);
           }
 
@@ -207,7 +210,7 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
           this.suffixOffset.set(tmp_suffix_offset.toString());
           
           this.write_counter += 1;
-          if(partitionCounter()){
+          if(partitionCounter(decoded_prefix)){
           	context.write(this.seqNumber, this.suffixOffset);
           }
 
@@ -389,7 +392,7 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
           this.suffixOffset.set(item.toString());
           
           this.write_counter += 1;
-          if(partitionCounter()){
+          if(partitionCounter(item.suffix)){
           	context.write(this.seqNumber, this.suffixOffset);
           }
         }
@@ -429,14 +432,17 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
       
     }
 
-    private boolean partitionCounter(){
+    private boolean partitionCounter(String suffix){
     	if (WRITE_ALL_PARTITION){
     		return true;
     	}
     	else{
 	    	if (this.write_counter == COUNTTO){
-	    		this.write_counter = 0;
-	    		return true;
+          if(suffix!=this.previousKeySuffix){
+            this.write_counter = 0;
+            this.previousKeySuffix=suffix;
+            return true;
+          }
 	    	}
 	    	return false;
     	}
