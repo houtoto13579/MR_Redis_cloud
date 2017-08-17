@@ -7,7 +7,7 @@ if __name__ == "__main__":
     folderName = "output_TEST/"
     filePrefix = "part-r-"
     print("Checking Correctness under folder " + folderName)
-    totalFile = len([name for name in os.listdir('~/output_TEST/')])
+    totalFile = len([name for name in os.listdir('../output_TEST/')])
     fileCount = 0
     addNum=1
     if reduce_file_origin:

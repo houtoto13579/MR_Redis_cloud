@@ -52,7 +52,7 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
 
   // ### testing variable init by Yueh
   private int write_counter, sequenceInReducerCounter;
-  private final boolean WRITE_ALL_PARTITION = true;
+  private final boolean WRITE_ALL_PARTITION = false;
   static final int COUNTTO = 100;
   private String previousKeySuffix;
 
@@ -437,14 +437,15 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
     		return true;
     	}
     	else{
-	    	if (this.write_counter == COUNTTO){
-          if(suffix!=this.previousKeySuffix){
+          if (this.write_counter == COUNTTO){
+            if(suffix!=this.previousKeySuffix){
+              this.write_counter = 0;
+              this.previousKeySuffix=suffix;
+              return true;
+            }
             this.write_counter = 0;
-            this.previousKeySuffix=suffix;
-            return true;
-          }
-	    	}
-	    	return false;
+	  }
+	  return false;
     	}
     }
 

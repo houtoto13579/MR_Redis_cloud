@@ -51,7 +51,7 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
     for(int i = 0; i < numNodes; i++) {
       this.bulksOfKeys.add(new ArrayList<String>());
     }
-    this.keyMapperArray=this.readLines("hdfs:/key/10k_key");
+    this.keyMapperArray=this.readLines("10k_key");
     this.keyCount=this.keyMapperArray.length;
   }
 
@@ -110,7 +110,7 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
       //System.out.print(suffix_str+"\r\n");
       for(int i=0;i< suffix_str.length();i++){
         prefix_DNA = suffix_str.substring(i);
-        context.write(new IntWritable(profilingDNASeqByKey(prefix_DNA, NUM_PREFIX)), new LongWritable(seqNumberAndOffset+i));
+        context.write(new IntWritable(profilingDNASeq(prefix_DNA, NUM_PREFIX)), new LongWritable(seqNumberAndOffset+i));
       }
       context.write(new IntWritable(0), new LongWritable(seqNumberAndOffset+suffix_str.length()));
 
