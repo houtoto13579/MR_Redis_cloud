@@ -52,7 +52,7 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
       this.bulksOfKeys.add(new ArrayList<String>());
     }
     //this.keyMapperArray=this.readLines("10k_key_19227");
-    this.keyMapperArray=this.readLines("hdfs:/key/10k_key_19227")
+    this.keyMapperArray=this.readLines("hdfs:/key/10k_key_19227");
     this.keyCount=this.keyMapperArray.length;
   }
 
