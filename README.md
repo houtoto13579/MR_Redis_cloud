@@ -37,7 +37,17 @@ sudo apt-get install maven
     This is the client library that helps the mappers and reducers to communicate with Redis.
     https://github.com/hckuo/jedis/tree/add-mgetsuffix-command
 
-## Overall execution
+## Third Party Installation
+```shell
+mvn install:install-file -Dfile=libs/jedis-3.0.0-SNAPSHOT.jar -DgroupID=redis.clients -DartifactId=jedis -Dversion=3.0.0-SNAPSHOT -Dpackaging=jar
+```
+
+## Execution on Local
+```shell
+mvn clean package && hadoop fs -rm -r -f ~/output_TEST && hadoop jar target/MR_Redis-1.0-SNAPSHOT-jar-with-dependencies.jar sinica.iis.SuffixArrayRun ~/input_10K ~/output_TEST
+```
+
+## Overall execution on cloud
 ```shell
 mvn clean package && hadoop fs -rm -r -f /output_1M && hadoop jar target/MR_Redis-1.0-SNAPSHOT-jar-with-dependencies.jar sinica.iis.SuffixArrayRun /input_1M /output_1M
 ```
