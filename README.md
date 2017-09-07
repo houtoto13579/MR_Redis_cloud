@@ -15,6 +15,12 @@ sudo apt-get install maven
 `mvn clean package`
 > The generated jar is located in ${project.basdir}/target/${artifactId}-${version}-jar-with-dependencies.jar
 ## Hadoop
+### Start Proxy Server and History(8088)
+```shell
+mr-jobhistory-daemon.sh --config $HADOOP_HOME/etc/hadoop/ start historyserver
+yarn-daemon.sh start proxyserver`
+```
+
 ### Run
 `hadoop jar ${artifactId}-${version}.jar ${job-name} ${input-folder} ${output-folder}`
 > This command above take files from ${input-folder} and generate the result into $output-folder}.
