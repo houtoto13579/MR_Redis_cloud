@@ -21,9 +21,24 @@ public class SuffixArrayRun{
         }
         
         Configuration conf = new Configuration();
-        conf.set("REDIS_HOSTS", "localhost");
-        conf.setInt("NUM_NODES", 1);
-        //long start = new Date().getTime();
+        //Configuration conf = getConf();
+	
+        conf.set("fs.defaultFS", "hdfs://140.109.17.134:9000");
+        conf.set("mapreduce.jobtracker.address", "140.109.17.134:54311");
+        conf.set("mapreduce.framework.name", "yarn");
+        conf.set("yarn.resourcemanager.address", "140.109.17.134:8050");
+	conf.set("yarn.resourcemanager.webapp.address", "140.109.17.134:8088");
+	conf.set("mapreduce.jobhistory.address","140.109.17.134:10020");
+	conf.set("mapreduce.jobhistory.webapp.address", "140.109.17.134:19888");
+	
+	conf.set("mapreduce.map.java.opts", "-Xmx2048m");
+	conf.set("mapreduce.reduce.java.opts", "-Xmx8192m");	
+	
+	conf.set("REDIS_HOSTS", "140.109.17.134,192.168.100.102,192.168.100.105,192.168.100.106,192.168.100.110,192.168.100.111,192.168.100.115,192.168.100.116,192.168.100.117,192.168.100.118,192.168.100.119,192.168.100.120,192.168.100.121,192.168.100.122,192.168.100.123,192.168.100.124");
+        //conf.set("REDIS_HOSTS", "140.109.17.134,192.168.100.102");
+	conf.setInt("NUM_NODES", 16);
+        conf.setInt("METHOD", 1);
+	//long start = new Date().getTime();
         // time count
         long start = System.currentTimeMillis();
         
@@ -35,7 +50,7 @@ public class SuffixArrayRun{
         
         job.setJarByClass(SuffixArrayRun.class);
 
-        //job.setNumReduceTasks(64);
+        job.setNumReduceTasks(64);
      
         job.setMapperClass(BioMapper.class);
         job.setMapOutputKeyClass(IntWritable.class);

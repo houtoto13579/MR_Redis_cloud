@@ -28,6 +28,7 @@ import org.apache.log4j.Logger;
 import redis.clients.jedis.Jedis;
 
 public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWritable> {
+  private static int method;
   static final int NUM_PREFIX = 13;
 
   private final Logger sLogger = Logger.getLogger(BioMapper.class.getName());
@@ -45,6 +46,7 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
     Configuration job = context.getConfiguration();
     BioMapper.numNodes = job.getInt("NUM_NODES", 1);
     BioMapper.redisHosts = job.get("REDIS_HOSTS", "localhost").split(",");
+    BioMapper.method = job.getInt("METHOD", 1);
     sLogger.info("The number of node is " + numNodes);
     sLogger.info("The redis hosts are " + redisHosts);
     this.bulksOfKeys = new ArrayList<ArrayList<String>>();
@@ -59,7 +61,9 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
   protected void cleanup(Context context) throws IOException, InterruptedException {
     for (int i = 0; i < numNodes; i++) {
       if(bulksOfKeys.get(i).size() > 0) {
-        new Jedis(redisHosts[i], 6379, 300000).mset(bulksOfKeys.get(i).toArray(new String[0]));
+    	System.out.println("redisHost: "+redisHosts[i]);
+    	//System.out.print("bulksOfKeys.get: "+bulksOfKeys.get(i)); 
+	new Jedis(redisHosts[i], 6379, 300000).mset(bulksOfKeys.get(i).toArray(new String[0]));
       }
     }
   }
@@ -111,7 +115,10 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
       //System.out.print(suffix_str+"\r\n");
       for(int i=0;i< suffix_str.length();i++){
         prefix_DNA = suffix_str.substring(i);
-        context.write(new IntWritable(profilingDNASeq(prefix_DNA, NUM_PREFIX)), new LongWritable(seqNumberAndOffset+i));
+        if(BioMapper.method==0)	
+          context.write(new IntWritable(profilingDNASeq(prefix_DNA, NUM_PREFIX)), new LongWritable(seqNumberAndOffset+i));
+        else
+          context.write(new IntWritable(profilingDNASeqByKey(prefix_DNA, NUM_PREFIX)), new LongWritable(seqNumberAndOffset+i));
       }
       context.write(new IntWritable(0), new LongWritable(seqNumberAndOffset+suffix_str.length()));
 

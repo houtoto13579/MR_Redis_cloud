@@ -52,7 +52,7 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
 
   // ### testing variable init by Yueh
   private int write_counter, sequenceInReducerCounter;
-  private final boolean WRITE_ALL_PARTITION = false;
+  private final boolean WRITE_ALL_PARTITION = true;
   static final int COUNTTO = 100;
   private String previousKeySuffix;
 
@@ -64,7 +64,7 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
     BioReducer.numNodes = job.getInt("NUM_NODES", 1);
     BioReducer.redisHosts = job.get("REDIS_HOSTS", "localhost").split(",");
     sLogger.info("The number of node is " + numNodes);
-    sLogger.info("The redis hosts are " + redisHosts);
+    sLogger.info("The redis hosts are " + redisHosts[1]);
     this.bulksOfKeys = new ArrayList<>();
     this.bulksOfOffsets = new ArrayList<>();
     this.bulksOfValues = new ArrayList<>();

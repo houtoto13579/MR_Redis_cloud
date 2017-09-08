@@ -7,15 +7,17 @@ public class BioPartitioner extends Partitioner<IntWritable,LongWritable> {
   @Override
   public int getPartition(IntWritable DNA_prefix, LongWritable value, int numReduceTasks) {
   //public int getPartition(LongWritable DNA_prefix, LongWritable value, int numReduceTasks) {
-
-  	boolean USING_KEY = false;
+	
+  	boolean USING_KEY = true;
 	//int keyCount = 196;
-	int keyCount = 19567;
+	//int keyCount = 19567;
     	//int keyCount = 97835;
+	int keyCount = 19228;
 	int reducerCount=64;	
 
 	if(USING_KEY){
-		return (DNA_prefix.get()-1)*reducerCount/(keyCount);
+		int ans = (DNA_prefix.get()-1)*reducerCount/(keyCount);
+		return ans;
 	}
 	else{
 		if(DNA_prefix.get() <= 307181224)
