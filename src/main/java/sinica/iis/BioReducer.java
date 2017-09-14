@@ -114,7 +114,7 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
       /*** initialize the jedis connections***/
       jedisClients = new ArrayList<>();
       for(int i = 0; i < numNodes; i++) {
-        jedisClients.add(new Jedis(redisHosts[i]));
+        jedisClients.add(new Jedis(redisHosts[i],6379,3000000));
       }
 
       long start = System.currentTimeMillis();

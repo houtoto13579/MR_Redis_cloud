@@ -41,6 +41,28 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
   private String[] keyMapperArray;
   private int keyCount;
 
+  //private List<Jedis> clients = new ArrayList<Jedis>();
+  /*
+  private Jedis[] clients = {
+    new Jedis("140.109.17.134", 6379, 300000),
+    new Jedis("192.168.100.102", 6379, 300000),
+    new Jedis("192.168.100.105", 6379, 300000),
+    new Jedis("192.168.100.106", 6379, 300000),
+    new Jedis("192.168.100.110", 6379, 300000),
+    new Jedis("192.168.100.111", 6379, 300000),
+    new Jedis("192.168.100.115", 6379, 300000),
+    new Jedis("192.168.100.116", 6379, 300000),
+    new Jedis("192.168.100.117", 6379, 300000),
+    new Jedis("192.168.100.118", 6379, 300000),
+    new Jedis("192.168.100.119", 6379, 300000),
+    new Jedis("192.168.100.120", 6379, 300000),
+    new Jedis("192.168.100.121", 6379, 300000),
+    new Jedis("192.168.100.122", 6379, 300000),
+    new Jedis("192.168.100.123", 6379, 300000),
+    new Jedis("192.168.100.124", 6379, 300000),
+  };
+  */
+
   @Override
   protected void setup(Context context) throws IOException, InterruptedException {
     Configuration job = context.getConfiguration();
@@ -52,18 +74,23 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
     this.bulksOfKeys = new ArrayList<ArrayList<String>>();
     for(int i = 0; i < numNodes; i++) {
       this.bulksOfKeys.add(new ArrayList<String>());
-    }
+      //setting redisHosts client to prevent reset connection
+      //Jedis client = new Jedis(redisHosts[i], 6379, 300000);
+      //this.clients.add(client);
+    }    
     //this.keyMapperArray=this.readLines("10k_key_19227");
     this.keyMapperArray=this.readLines("hdfs:/key/10k_key_19227");
     this.keyCount=this.keyMapperArray.length;
   }
-
   protected void cleanup(Context context) throws IOException, InterruptedException {
     for (int i = 0; i < numNodes; i++) {
       if(bulksOfKeys.get(i).size() > 0) {
     	System.out.println("redisHost: "+redisHosts[i]);
     	//System.out.print("bulksOfKeys.get: "+bulksOfKeys.get(i)); 
-	new Jedis(redisHosts[i], 6379, 300000).mset(bulksOfKeys.get(i).toArray(new String[0]));
+	Jedis client = new Jedis(redisHosts[i], 6379, 300000);
+        client.mset(bulksOfKeys.get(i).toArray(new String[0]));
+        client.close();
+        //clients[i].mset(bulksOfKeys.get(i).toArray(new String[0]));
       }
     }
   }
