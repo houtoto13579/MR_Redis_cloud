@@ -185,6 +185,8 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
     }
     */
     // Binary Serch
+    if(seq=="")
+      return 0;
     int upper=keyCount-1;
     int lower=0;
     int middle = (upper+lower)/2;
