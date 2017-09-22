@@ -9,6 +9,11 @@ The draft of this research work can be found in https://arxiv.org/abs/1705.04789
 sudo apt-get update
 sudo apt-get install maven
 ```
+### Third Party Installation
+Because we will use customize redis, we will need to install third-party jedis.
+```shell
+mvn install:install-file -Dfile=libs/jedis-3.0.0-SNAPSHOT.jar -DgroupID=redis.clients -DartifactId=jedis -Dversion=3.0.0-SNAPSHOT -Dpackaging=jar
+```
 ### Install project dependencies
 `mvn clean install`
 ### Build Project into jar
@@ -35,25 +40,20 @@ yarn-daemon.sh start proxyserver`
 - SuffixArrayRun.java        //Main program that starts the suffix array construction
 - SeqNoSuffixOffset.java     //Data structure that stores the DNA sequence read
   
-## Redis that supports mgetsuffix command
+### Redis that supports mgetsuffix command
     You need to install Redis on the nodes that can serve the key-value access.
     The command mgetsuffix can reduce the communication overhead. 
     https://github.com/hckuo/redis/tree/add-mgetsuffix-command
-## The library of Jedis that supports mgetsuffix command
+### The library of Jedis that supports mgetsuffix command
     This is the client library that helps the mappers and reducers to communicate with Redis.
     https://github.com/hckuo/jedis/tree/add-mgetsuffix-command
 
-## Third Party Installation
-```shell
-mvn install:install-file -Dfile=libs/jedis-3.0.0-SNAPSHOT.jar -DgroupID=redis.clients -DartifactId=jedis -Dversion=3.0.0-SNAPSHOT -Dpackaging=jar
-```
-
-## Execution on Local
+## Execution
+### Execution on Local
 ```shell
 mvn clean package && hadoop fs -rm -r -f ~/output_TEST && hadoop jar target/MR_Redis-1.0-SNAPSHOT-jar-with-dependencies.jar sinica.iis.SuffixArrayRun ~/input_10K ~/output_TEST
 ```
-
-## Overall execution on cloud
+### Execution on cloud
 ```shell
 mvn clean package && hadoop fs -rm -r -f /output_1M && hadoop jar target/MR_Redis-1.0-SNAPSHOT-jar-with-dependencies.jar sinica.iis.SuffixArrayRun /input_1M /output_1M
 ```
@@ -68,4 +68,38 @@ After that, simply input:
 ```
 
 However, the sequence made by HH is different, which 63 is the smallest.
-    
+
+## Web UI
+I have add some web UI can access to the log, but the historyUI link is wrong. Just replace iiscloud01 with IP.
+
+You can access Web UI by two port.
+- DataNode: port 50070
+- yarn: port 8088
+
+## Troubleshooting
+### Balancer
+Hadoop(HDFS) will encounter inbalance problems while storing file or in the middle of map and reduce.
+You can run balancer to solve the problem.
+```shell
+hadoop balancer [-threshold <t>] 
+```
+
+### Save Mode Problem
+There are many possibility for the nodemanager to enter safemode. You cannot use hadoop or access data then. Leave safe mode by excuting this:
+```shell
+hadoop dfsadmin -safemode leave
+```
+
+***However***, you should check the node condition before leaving save mode. Here are some possible problems:
+#### Node break down
+It is possible that some node will be unstable, you can solve it by restart that node by stop and start the nodemanager and datanode.
+```shell
+hadoop-daemon.sh start datanode
+yarn-daemon.sh start nodemanager
+```
+If problem remain, try restart the whole computer.
+(***important:*** You should also check whether redis is running or not)
+#### Node don't have enough space and become unhealthy node
+You can use balancer to solve that problem
+
+
