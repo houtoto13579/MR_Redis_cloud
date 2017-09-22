@@ -189,8 +189,9 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
           this.get_size = 0;
         }
       }
+      /* We comment this line for solving reducer bug in 18 and 45
       else if(key.get()%78125 == 0){
-        /*** process the accumulated suffixes to preserve the order ***/
+        // process the accumulated suffixes to preserve the order
         if(this.get_size > 0){
           batchProcess(context, START_TO_SORT);
           printSizeAndAccumulate();
@@ -219,6 +220,7 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
         }
 
       }
+      */
       else{
         StringBuilder suffix_offset;
 

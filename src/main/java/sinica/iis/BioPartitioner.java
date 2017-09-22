@@ -12,7 +12,8 @@ public class BioPartitioner extends Partitioner<IntWritable,LongWritable> {
 	//int keyCount = 196;
 	//int keyCount = 19567;
     	//int keyCount = 97835;
-	int keyCount = 19228;
+	//int keyCount = 19228; //Pass 30G
+	int keyCount = 39006;
 	int reducerCount=64;	
 
 	if(USING_KEY){

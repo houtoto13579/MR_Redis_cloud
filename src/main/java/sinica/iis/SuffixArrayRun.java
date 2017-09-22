@@ -48,7 +48,8 @@ public class SuffixArrayRun{
         Job job = Job.getInstance(conf);
 
         // Specify various job-specific parameters     
-        job.setJobName("(8G reducer/7G opts)Method 1 Run SuffixArray for Bio Info (64) 160w CMS GC MGET Suffix");
+        job.setJobName("39k key Sort 60GB(randomly distribute, delete short key reducer process)");
+        //job.setJobName("(8G reducer/7G opts)Method 1 Run SuffixArray for Bio Info (64) 160w CMS GC MGET Suffix");
         //job.setJobName("Run SuffixArray for Bio Info (32) 160W CMS AlwaysTenure NewRatio=5");
         
         job.setJarByClass(SuffixArrayRun.class);

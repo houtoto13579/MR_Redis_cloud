@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import java.io.*;
 import java.util.*;
@@ -79,7 +80,7 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
       //this.clients.add(client);
     }    
     //this.keyMapperArray=this.readLines("10k_key_19227");
-    this.keyMapperArray=this.readLines("hdfs:/key/10k_key_19227");
+    this.keyMapperArray=this.readLines("hdfs:/key/100k_key_39005");
     this.keyCount=this.keyMapperArray.length;
   }
   protected void cleanup(Context context) throws IOException, InterruptedException {
@@ -187,6 +188,20 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
     // Binary Serch
     if(seq=="")
       return 0;
+    // for key 39005(Line #, not array) //
+    // A: 2~24 
+    // C: 11076~11154
+    // G: 19526~19537
+    // T: 27864~27947
+    if(seq=="A")
+        return ThreadLocalRandom.current().nextInt(2, 23 + 1)+1;	
+    if(seq=="C")
+        return ThreadLocalRandom.current().nextInt(11076, 11153 + 1)+1;	
+    if(seq=="G")
+        return ThreadLocalRandom.current().nextInt(19526, 19536 + 1)+1;	
+    if(seq=="T")
+        return ThreadLocalRandom.current().nextInt(27864, 27946 + 1)+1;	
+
     int upper=keyCount-1;
     int lower=0;
     int middle = (upper+lower)/2;
