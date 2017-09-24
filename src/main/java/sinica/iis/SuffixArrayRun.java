@@ -22,8 +22,8 @@ public class SuffixArrayRun{
         
         Configuration conf = new Configuration();
         //Configuration conf = getConf();
-		
-        conf.set("fs.defaultFS", "hdfs://140.109.17.134:9000");
+        
+	conf.set("fs.defaultFS", "hdfs://140.109.17.134:9000");
         conf.set("mapreduce.jobtracker.address", "140.109.17.134:54311");
         conf.set("mapreduce.framework.name", "yarn");
         conf.set("yarn.resourcemanager.address", "140.109.17.134:8050");

@@ -18,10 +18,6 @@ import org.apache.log4j.Logger;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPoolConfig;
 
-
-
-
-
 public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable, Text> {
   static final int NUM_PREFIX = 13;
   static final int TIME_OUT = 600000;
@@ -52,7 +48,7 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
 
   // ### testing variable init by Yueh
   private int write_counter, sequenceInReducerCounter;
-  private final boolean WRITE_ALL_PARTITION = true;
+  private final boolean WRITE_ALL_SUFFIX = true;
   static final int COUNTTO = 100;
   private String previousKeySuffix;
 
@@ -106,7 +102,6 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
       }
     }
     System.out.print("&&&&&&&&&   "+ this.sequenceInReducerCounter+"   &&&&&&&&&&\r\n");
-
   }
 
     @Override
@@ -122,7 +117,6 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
 
       int sel;
       int offset;
-      //String mem_key;
       Long mem_key;
       String decoded_prefix;
 
@@ -134,93 +128,17 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
           offset = (int)(value.get()%1000L);
 
           tmp_suffix_offset.append(offset);
-          //context.write(new LongWritable((value.get()-offset)/1000L), new Text(tmp_suffix_offset.toString()));
           this.seqNumber.set((value.get()-offset)/1000L);
           this.suffixOffset.set(tmp_suffix_offset.toString());
           
           this.write_counter += 1;
-          if(partitionCounter("$")){
+          if(doWriteSuffix("$")){
           	context.write(this.seqNumber, this.suffixOffset);
           }
-
           tmp_suffix_offset.delete(2, tmp_suffix_offset.length());
           reduce_group_size++;
         }
       }
-      else if(isLargeGrain(key.get()) ){
-        /*** process the accumulated suffixes to preserve the order ***/
-        if(this.get_size > 0){
-          batchProcess(context, START_TO_SORT);
-          printSizeAndAccumulate();
-          this.get_size = 0;
-        }
-
-
-        StringBuilder suffix_offset;
-
-        boolean multiple_get = false;
-        for(LongWritable value: values){
-
-          offset = (int)(value.get()%1000L);
-          mem_key = new Long((value.get()-offset)/1000L);
-          
-          dispatchKeyValuePair(mem_key, new Integer(offset));
-          
-          reduce_group_size++;
-          this.get_size++;
- 
-          if(this.get_size > GROUP_SIZE){
-            batchProcess(context, NOT_SORT_YET);
-            printSizeAndAccumulate();
-            this.get_size = 0;
-            multiple_get = true;
-          }
-
-        }
-
-        //outlier of reduce group
-        //if(reduce_group_size > GROUP_SIZE)
-        //  sLogger.info("Key "+decodePrefix(key.get(), NUM_PREFIX)+"for Reduce group size: "+reduce_group_size);
-
-                
-        if(multiple_get){
-          batchProcess(context, START_TO_SORT);
-          printSizeAndAccumulate();
-          this.get_size = 0;
-        }
-      }
-      /* We comment this line for solving reducer bug in 18 and 45
-      else if(key.get()%78125 == 0){
-        // process the accumulated suffixes to preserve the order
-        if(this.get_size > 0){
-          batchProcess(context, START_TO_SORT);
-          printSizeAndAccumulate();
-          this.get_size = 0;
-        }
-       
-        decoded_prefix = decodePrefix(key.get(), NUM_PREFIX);
-        
-        StringBuilder tmp_suffix_offset = new StringBuilder(decoded_prefix);;
-        for(LongWritable value: values){
-        	//System.out.print("value: " + value.get() + "\n");   // Print value for testing
-          offset = (int)(value.get()%1000L);
-          tmp_suffix_offset.append(" ");
-          //Print base-5 of the DNA seq for keyMapperArray in BioMapper 
-          tmp_suffix_offset.append(offset);
-          this.seqNumber.set((value.get()-offset)/1000L);
-          this.suffixOffset.set(tmp_suffix_offset.toString());
-          
-          this.write_counter += 1;
-          if(partitionCounter(decoded_prefix)){
-          	context.write(this.seqNumber, this.suffixOffset);
-          }
-
-          tmp_suffix_offset.delete(decoded_prefix.length(), tmp_suffix_offset.length());
-          reduce_group_size++;
-        }
-
-      }
-      */
       else{
         StringBuilder suffix_offset;
 
@@ -232,7 +150,6 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
           mem_key = new Long((value.get()-offset)/1000L);
        
           dispatchKeyValuePair(mem_key, new Integer(offset));
-   
 
           reduce_group_size++;
           this.get_size++;
@@ -245,26 +162,13 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
           }
 
         }
-
-
-        //outlier of reduce group
-        //if(reduce_group_size > GROUP_SIZE)
-        //  sLogger.info("Key "+decodePrefix(key.get(), NUM_PREFIX)+"for Reduce group size: "+reduce_group_size);
-
-                
         if(multiple_get){
           batchProcess(context, START_TO_SORT);
           printSizeAndAccumulate();
           this.get_size = 0;
-        }
-        
-                
+        }          
       }
       end = System.currentTimeMillis();      
-      //sLogger.info("One Reduce group time("+decodePrefix(key.get(), NUM_PREFIX)+"): "+(end-start)+" ms");
-      //sLogger.info("                 size: "+reduce_group_size);
-        
-
     }//end of Reduce()
 
 
@@ -283,23 +187,9 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
                       , this.bulksOfOffsets.get(i)
                       , jedisClients.get(i))); 
         }
-        //context.progress(); // report on progress
       }
-
-
       temp_endT = System.currentTimeMillis();
-      
- 
-      //sLogger.info("Accumulated Reduce group size: "+this.get_size+"  time: "+(temp_endT-temp_startT)+" ms");
-      //sLogger.info("Speed of getting data from 16 Redises: "+0.2*this.get_size/(temp_endT-temp_startT)+" MB/sec");
-
-
       displayKeyValue(context, start_to_sort);
-
-      //this.groupKeys.clear();
-      //this.groupValues.clear();
-
-      
     }
 
     private void dispatchKeyValuePair(Long f_key, Integer f_value){
@@ -307,38 +197,6 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
       int sel = (int)((f_key.longValue()/100L)%numNodes);
       this.bulksOfKeys.get(sel).add(f_key.toString());
       this.bulksOfOffsets.get(sel).add(f_value);
-    }
-
-
-    private String decodePrefix(long f_key, int num_prefix){
-      int digit;
-      StringBuilder buffer = new StringBuilder(); 
-
-      for(int i=1;i< num_prefix;i++){
-        digit = (int)(f_key % 5L);
-
-        switch(digit){
-          case 1: buffer.insert(0,"A"); break;
-          case 2: buffer.insert(0,"C"); break;
-          case 3: buffer.insert(0,"G"); break;
-          case 4: buffer.insert(0,"T"); break;
-          default: break;
-        }
-
-        f_key -= digit;
-        f_key = f_key/5L;
-      }
-
-      switch((int)f_key){
-        case 1: buffer.insert(0,"A"); break;
-        case 2: buffer.insert(0,"C"); break;
-        case 3: buffer.insert(0,"G"); break;
-        case 4: buffer.insert(0,"T"); break;
-        default: break;
-      }
-      buffer.append("$");
-      return buffer.toString();
-
     }
 
     private void prepareSuffixForSort(ArrayList <String> bulkOfKeys,
@@ -357,8 +215,6 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
         StringBuilder buffer = new StringBuilder(bulkOfValues.get(j));
         buffer.append("$");
         element.suffix = buffer.toString();
-        //System.out.print("ff");
-
         this.sortedSuffix.add(element);
 
       }
@@ -370,12 +226,9 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
       for(ArrayList<String> bulkOfKeys : bulksOfKeys) {
         capacity += bulkOfKeys.size();
       }
-      
-      //ArrayList <SeqNoSuffixOffset> sortedSuffix = new ArrayList<SeqNoSuffixOffset>(capacity);
- 
+
       long temp_startT;
       long temp_endT;
-
       
       for(int i = 0; i < numNodes; i++) {
         prepareSuffixForSort(this.bulksOfKeys.get(i), this.bulksOfValues.get(i), this.bulksOfOffsets.get(i));
@@ -387,40 +240,19 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
         temp_startT = System.currentTimeMillis();
         Collections.sort(this.sortedSuffix);       
         temp_endT = System.currentTimeMillis();
-        //sLogger.info("Sorting time: "+(temp_endT-temp_startT)+" ms");
  
         for(SeqNoSuffixOffset item: this.sortedSuffix){
           this.seqNumber.set(item.seqNo);
           this.suffixOffset.set(item.toString());
           
           this.write_counter += 1;
-          if(partitionCounter(item.suffix)){
+          if(doWriteSuffix(item.suffix)){
           	context.write(this.seqNumber, this.suffixOffset);
           }
         }
-          	
         //force clean
         this.sortedSuffix.clear();
       }
-
-      
-    }
-
-    private boolean isLargeGrain(int encodedPrefix){
-      //13 chars
-      if(encodedPrefix == 356038411)
-        return true;
-    
-      if(encodedPrefix == 559488932)
-        return true;
-
-      if(encodedPrefix == 966389973)
-        return true;
-
-      if(encodedPrefix == 1169840494)
-        return true;
-
-      return false;
     }
 
     public static List<String> mGetSuffix(List<String> keys, List<Integer> starts, Jedis jedis) {
@@ -431,26 +263,29 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
         suffix_start[i] = starts.get(i).longValue();
 
       return jedis.mgetsuffix(keys.toArray(new String[0]), suffix_start);
-      
     }
 
-    private boolean partitionCounter(String suffix){
-    	if (WRITE_ALL_PARTITION){
+
+
+
+
+
+    private boolean doWriteSuffix(String suffix){
+    	if (WRITE_ALL_SUFFIX){
     		return true;
     	}
     	else{
-          if (this.write_counter == COUNTTO){
-            if(suffix!=this.previousKeySuffix){
-              this.write_counter = 0;
-              this.previousKeySuffix=suffix;
-              return true;
-            }
-            this.write_counter = 0;
-	  }
-	  return false;
+            if (this.write_counter == COUNTTO){
+                if(suffix!=this.previousKeySuffix){
+                    this.write_counter = 0;
+                    this.previousKeySuffix=suffix;
+                    return true;
+                }   
+                this.write_counter = 0;
+	        }
+	        return false;
     	}
     }
-
     private void printSizeAndAccumulate(){
     	//System.out.print("get_size: "+ this.get_size+"\r\n");
     	this.sequenceInReducerCounter += this.get_size;
