@@ -143,10 +143,14 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
       //System.out.print(suffix_str+"\r\n");
       for(int i=0;i< suffix_str.length();i++){
         prefix_DNA = suffix_str.substring(i);
+        /*
         if(BioMapper.method==0)	
           context.write(new IntWritable(profilingDNASeq(prefix_DNA, NUM_PREFIX)), new LongWritable(seqNumberAndOffset+i));
-        else
+        else{
           context.write(new IntWritable(profilingDNASeqByKey(prefix_DNA, NUM_PREFIX)), new LongWritable(seqNumberAndOffset+i));
+        }
+        */
+        context.write(new IntWritable(profilingDNASeqByKey(prefix_DNA, NUM_PREFIX)), new LongWritable(seqNumberAndOffset+i));
       }
       context.write(new IntWritable(0), new LongWritable(seqNumberAndOffset+suffix_str.length()));
 
@@ -186,21 +190,22 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
     }
     */
     // Binary Serch
-    if(seq=="")
+    if(seq.equals("")||seq==""){
       return 0;
+    }
     // for key 39005(Line #, not array) //
     // A: 2~24 
     // C: 11076~11154
     // G: 19526~19537
     // T: 27864~27947
-    if(seq=="A")
-        return ThreadLocalRandom.current().nextInt(2, 23 + 1)+1;	
-    if(seq=="C")
-        return ThreadLocalRandom.current().nextInt(11076, 11153 + 1)+1;	
-    if(seq=="G")
-        return ThreadLocalRandom.current().nextInt(19526, 19536 + 1)+1;	
-    if(seq=="T")
-        return ThreadLocalRandom.current().nextInt(27864, 27946 + 1)+1;	
+    if(seq.equals("A"))
+        return ThreadLocalRandom.current().nextInt(2, 23)+1;	
+    if(seq.equals("C"))
+        return ThreadLocalRandom.current().nextInt(11076, 11153)+1;
+    if(seq.equals("G"))
+        return ThreadLocalRandom.current().nextInt(19526, 19536)+1;	
+    if(seq.equals("T"))
+        return ThreadLocalRandom.current().nextInt(27864, 27946)+1;	
 
     int upper=keyCount-1;
     int lower=0;
