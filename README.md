@@ -70,7 +70,7 @@ After that, simply input:
 However, the sequence made by HH is different, which 63 is the smallest.
 
 ## Web UI
-I have add some web UI can access to the log, but the historyUI link is wrong. Just replace iiscloud01 with IP.
+Web UI can access to the log, but the historyUI link is wrong. Just replace iiscloud01 with IP.
 
 You can access Web UI by two port.
 - DataNode: port 50070
@@ -78,14 +78,14 @@ You can access Web UI by two port.
 
 ## Troubleshooting
 ### Balancer
-Hadoop(HDFS) will encounter inbalance problems while storing file or in the middle of map and reduce.
+Hadoop(HDFS) will encounter inbalanced problems while storing file or in the middle of map and reduce.
 You can run balancer to solve the problem.
 ```shell
 hadoop balancer [-threshold <t>] 
 ```
 
 ### Save Mode Problem
-There are many possibility for the nodemanager to enter safemode. You cannot use hadoop or access data then. Leave safe mode by excuting this:
+There are many probelms which will cause the nodemanager to enter safemode. You cannot use hadoop or access data then. Leave safe mode by excuting this:
 ```shell
 hadoop dfsadmin -safemode leave
 ```
@@ -101,5 +101,22 @@ If problem remain, try restart the whole computer.
 (***important:*** You should also check whether redis is running or not)
 #### Node don't have enough space and become unhealthy node
 You can use balancer to solve that problem
+
+### Redis server problem
+
+It is recommended that Redis need to be flush every time before use:
+```shell
+redis-cli flushall
+```
+#### Memory not enough
+change configuration in /etc/redis/redis.conf
+
+#### restart or start redis server by yourself
+1. Copy compiled redis from /usr/bin/redis* to new node's /usr/bin/
+2. change node in /home/hduser/sys_sh/hosts, and execute check_redis.sh under /home/hduser/sys_sh, which will perform flush and restart all redis
+
+
+
+
 
 
