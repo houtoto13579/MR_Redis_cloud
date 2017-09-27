@@ -88,7 +88,7 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
       if(bulksOfKeys.get(i).size() > 0) {
     	System.out.println("redisHost: "+redisHosts[i]);
     	//System.out.print("bulksOfKeys.get: "+bulksOfKeys.get(i)); 
-	Jedis client = new Jedis(redisHosts[i], 6379, 300000);
+	Jedis client = new Jedis(redisHosts[i], 6379, 3000000);
         client.mset(bulksOfKeys.get(i).toArray(new String[0]));
         client.close();
         //clients[i].mset(bulksOfKeys.get(i).toArray(new String[0]));
