@@ -25,7 +25,7 @@ import redis.clients.jedis.JedisPoolConfig;
 public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable, Text> {
   static final int NUM_PREFIX = 13;
   static final int TIME_OUT = 600000;
-  static final int GROUP_SIZE = 1600000;
+  static final int GROUP_SIZE = 800000; // default 1600000
   static final int MGET_SUFFIX_SIZE = 100000;
   static final boolean NOT_SORT_YET = false;
   static final boolean START_TO_SORT = true;
@@ -323,7 +323,7 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
  
         for(SeqNoSuffixOffset item: this.sortedSuffix){
           this.seqNumber.set(item.seqNo);
-          this.suffixOffset.set(item.toString());
+          this.suffixOffset.set(item.toShortString()); //toShortString() for only index and set
           
           this.write_counter += 1;
           if(partitionCounter(item.suffix)){

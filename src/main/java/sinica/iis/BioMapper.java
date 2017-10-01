@@ -206,7 +206,33 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
         return ThreadLocalRandom.current().nextInt(19526, 19536)+1;	
     if(seq.equals("T"))
         return ThreadLocalRandom.current().nextInt(27864, 27946)+1;	
-
+    // for key 39005(Line #, not array) //
+    // AC: 3484~3501 
+    // AT: 8231~8251
+    // CC: 14166~14185
+    // CT: 17055~17073
+    // GC: 21716~21733
+    // GT: 25574~25590
+    // TC: 30313~30331
+    // TT: 35519~35546
+    if(seq.equals("AC"))
+        return ThreadLocalRandom.current().nextInt(3484, 3500)+1;	
+    if(seq.equals("AT"))
+        return ThreadLocalRandom.current().nextInt(8231, 8250)+1;
+    if(seq.equals("CC"))
+        return ThreadLocalRandom.current().nextInt(14166, 14184)+1;	
+    if(seq.equals("CT"))
+        return ThreadLocalRandom.current().nextInt(17055, 17072)+1;	
+    if(seq.equals("GC"))
+        return ThreadLocalRandom.current().nextInt(21716, 21732)+1;	
+    if(seq.equals("GT"))
+        return ThreadLocalRandom.current().nextInt(25574, 25589)+1;	
+    if(seq.equals("TC"))
+        return ThreadLocalRandom.current().nextInt(30313, 30330)+1;	
+    if(seq.equals("TT"))
+        return ThreadLocalRandom.current().nextInt(35519, 35545)+1;	
+    
+    
     int upper=keyCount-1;
     int lower=0;
     int middle = (upper+lower)/2;

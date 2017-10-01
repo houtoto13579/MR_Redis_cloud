@@ -31,5 +31,11 @@ public class SeqNoSuffixOffset implements Comparator<SeqNoSuffixOffset>, Compara
 
     return buffer.toString();
   }
+  // only print offset
+  public String toShortString(){
+    StringBuilder buffer = new StringBuilder(5);
+    buffer.append(this.offset);
+    return buffer.toString(); 
+  }
 }
 
