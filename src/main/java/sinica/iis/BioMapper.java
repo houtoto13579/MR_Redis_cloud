@@ -246,7 +246,9 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
 
     while(true){
       String middleKey = keyMapperArray[middle].split("\\s+")[1];
-      if(middleKey.compareTo(seq)>=0)
+      if(middleKey.compareTo(seq)==0)
+        return middle+1;
+      else if(middleKey.compareTo(seq)>0)
         upper=middle;
       else
         lower=middle;
