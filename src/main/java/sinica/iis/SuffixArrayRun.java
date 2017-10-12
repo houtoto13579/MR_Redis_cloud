@@ -36,9 +36,10 @@ public class SuffixArrayRun{
 	
 	conf.set("mapreduce.map.java.opts", "-Xmx2048m");
 	conf.set("mapreduce.reduce.java.opts", "-Xmx7168m");	
-
-		
-	conf.set("REDIS_HOSTS", "192.168.100.102,192.168.100.105,192.168.100.106,192.168.100.109,192.168.100.110,192.168.100.111,192.168.100.112,192.168.100.115,192.168.100.116,192.168.100.117,192.168.100.118,192.168.100.119,192.168.100.120,192.168.100.121,192.168.100.122,192.168.100.124");
+	
+	//conf.setInt("mapreduce.map.memory.mb", 4096);
+	//conf.setInt("mapreduce.reduce.memory.mb", 16384);	
+	conf.set("REDIS_HOSTS", "192.168.100.109,192.168.100.110,192.168.100.111,192.168.100.112,192.168.100.113,192.168.100.114,192.168.100.115,192.168.100.116,192.168.100.117,192.168.100.118,192.168.100.119,192.168.100.120,192.168.100.121,192.168.100.122,192.168.100.123,192.168.100.124");
         //conf.set("REDIS_HOSTS", "140.109.17.134,192.168.100.102");
 	conf.setInt("NUM_NODES", 16);
         conf.setInt("METHOD", 1);
@@ -49,7 +50,7 @@ public class SuffixArrayRun{
         Job job = Job.getInstance(conf);
 
         // Specify various job-specific parameters     
-        job.setJobName("120G eel (random dis/pseudo/redis9) testing");
+        job.setJobName("120GB new redis set");
         //job.setJobName("(8G reducer/7G opts)Method 1 Run SuffixArray for Bio Info (64) 160w CMS GC MGET Suffix");
         //job.setJobName("Run SuffixArray for Bio Info (32) 160W CMS AlwaysTenure NewRatio=5");
         
