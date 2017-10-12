@@ -114,8 +114,10 @@ change configuration in /etc/redis/redis.conf
 #### restart or start redis server by yourself
 1. Copy compiled redis from /usr/bin/redis* to new node's /usr/bin/
 2. change node in /home/hduser/sys_sh/hosts, and execute check_redis.sh under /home/hduser/sys_sh, which will perform flush and restart all redis
-
-
+3. or use following command
+```shell
+ssh -t iiscloudxx "sudo /etc/init.d/redis-server start"
+```
 
 
 
