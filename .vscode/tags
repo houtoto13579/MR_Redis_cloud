@@ -1,0 +1,22 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+addNum	../validate.py	/^        addNum=-1        $/;"	kind:variable	line:15
+addNum	../validate.py	/^    addNum=1$/;"	kind:variable	line:12
+file	../validate.py	/^            file = open(fileName,"r") $/;"	kind:variable	line:21
+fileCount	../validate.py	/^        fileCount = 63$/;"	kind:variable	line:14
+fileCount	../validate.py	/^    fileCount = 0$/;"	kind:variable	line:11
+fileName	../validate.py	/^        fileName = folderName + filePrefix + fileProfix$/;"	kind:variable	line:19
+filePrefix	../validate.py	/^    filePrefix = "part-r-"$/;"	kind:variable	line:8
+fileProfix	../validate.py	/^        fileProfix = str(fileCount).zfill(5)$/;"	kind:variable	line:18
+folderName	../validate.py	/^    folderName = "..\/output_10K\/"$/;"	kind:variable	line:7
+index.py	../index.py	1;"	kind:file	line:1
+reduce_file_origin	../validate.py	/^    reduce_file_origin = False$/;"	kind:variable	line:6
+suffix	../validate.py	/^                suffix = line.split()[1]$/;"	kind:variable	line:23
+tmpsuffix	../validate.py	/^                    tmpsuffix = suffix$/;"	kind:variable	line:28
+tmpsuffix	../validate.py	/^    tmpsuffix = "$"$/;"	kind:variable	line:16
+totalFile	../validate.py	/^    totalFile = len([name for name in os.listdir('..\/output_10K\/')])$/;"	kind:variable	line:10
+validate.py	../validate.py	1;"	kind:file	line:1
