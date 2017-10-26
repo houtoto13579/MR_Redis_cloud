@@ -68,9 +68,9 @@ if __name__ == "__main__":
             #print(file[index].split()[1])
             
     #print outputArray[531]
+    
 
-
-    with open("fast_index", "wb") as f:
-        writer = csv.writer(f)
+    with open("output.csv", "wb") as f:
+        writer = csv.writer(f,delimiter=' ')
         writer.writerows(outputArray)
 
