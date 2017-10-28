@@ -1,19 +1,15 @@
 import os.path
 import sys, time
-import numpy
 import csv
+import math
 
 
-def num2suffix(a):
+def num2suffix(a,l):
     short=False
     k=[]
-    k.insert(0,a%5)
-    a/=5
-    k.insert(0,a%5)
-    a/=5
-    k.insert(0,a%5)
-    a/=5
-    k.insert(0,a%5)
+    for i in range(l):
+        k.insert(0,a%5)
+        a/=5
     #print(k)
     ans=""
     for element in k:
@@ -40,15 +36,16 @@ if __name__ == "__main__":
 
     fileName = "100k_key_39005"
     file = open(fileName,"r").readlines()
-    
+    lengthOfPrefix = (int)(sys.argv[1])
     first=0
     index=0
     last=0
+    lengthOfArray = pow(5,lengthOfPrefix)
     outputArray=[]
     prevPrefix=""
-    for prefix in range(625):
-        thisPrefix = num2suffix(prefix)
-        nextPrefix = num2suffix(prefix+1)
+    for prefix in range(lengthOfArray):
+        thisPrefix = num2suffix(prefix,lengthOfPrefix)
+        nextPrefix = num2suffix(prefix+1,lengthOfPrefix)
         if thisPrefix!="X":
             first=index
             while True:
@@ -70,7 +67,7 @@ if __name__ == "__main__":
     #print outputArray[531]
     
 
-    with open("output.csv", "wb") as f:
+    with open("output_test", "wb") as f:
         writer = csv.writer(f,delimiter=' ')
         writer.writerows(outputArray)
 
