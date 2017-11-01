@@ -82,7 +82,7 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
     }    
     //this.keyMapperArray=this.readLines("10k_key_19227");
     this.keyMapperArray=this.readLines("hdfs:/key/100k_key_39005");
-    this.fastIndexArray=this.readLines("hdfs:/key/fast_index_6");
+    this.fastIndexArray=this.readLines("hdfs:/key/fast_index_4");
     this.keyCount=this.keyMapperArray.length;
   }
   protected void cleanup(Context context) throws IOException, InterruptedException {
@@ -235,7 +235,7 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
         return ThreadLocalRandom.current().nextInt(35519, 35545)+1;	
     
     // add faster index
-    int prefixNum = profilingDNASeq(seq,6);
+    int prefixNum = profilingDNASeq(seq,4);
     //System.out.print(seq);
     //System.out.println(prefixNum);
     
@@ -248,7 +248,7 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
     //lower=0;
     int middle = (upper+lower)/2;
 
-    String lowerKey = keyMapperArray[0].split("\\s+")[1];
+    String lowerKey = keyMapperArray[lower].split("\\s+")[1];
     String upperKey = keyMapperArray[upper].split("\\s+")[1];
     if(lowerKey.compareTo(seq)>=0) 
       return 1;
