@@ -51,7 +51,7 @@ public class SuffixArrayRun{
         Job job = Job.getInstance(conf);
 
         // Specify various job-specific parameters     
-        job.setJobName("fast_index_4 eel test fix lower/1.9G,7G");
+        job.setJobName("fast_index_6 eel");
         //job.setJobName("(8G reducer/7G opts)Method 1 Run SuffixArray for Bio Info (64) 160w CMS GC MGET Suffix");
         //job.setJobName("Run SuffixArray for Bio Info (32) 160W CMS AlwaysTenure NewRatio=5");
         

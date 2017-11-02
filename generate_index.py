@@ -26,8 +26,8 @@ def num2suffix(a,l):
         elif element==0:
             short=True
     return ans
-def getPrefix(suffix):
-    ans=suffix[:4]
+def getPrefix(suffix,l):
+    ans=suffix[:l]
     ans=ans.translate(None, '!@#$')
     return ans
 
@@ -52,7 +52,7 @@ if __name__ == "__main__":
                 if index==len(file):
                     last=index
                     break
-                linePrefix=getPrefix(file[index].split()[1])
+                linePrefix=getPrefix(file[index].split()[1],lengthOfPrefix)
                 if linePrefix!=thisPrefix:
                      last=index
                      break

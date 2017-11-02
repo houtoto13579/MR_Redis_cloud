@@ -82,7 +82,7 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
     }    
     //this.keyMapperArray=this.readLines("10k_key_19227");
     this.keyMapperArray=this.readLines("hdfs:/key/100k_key_39005");
-    this.fastIndexArray=this.readLines("hdfs:/key/fast_index_4");
+    this.fastIndexArray=this.readLines("hdfs:/key/fast_index_6");
     this.keyCount=this.keyMapperArray.length;
   }
   protected void cleanup(Context context) throws IOException, InterruptedException {
@@ -235,25 +235,29 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
         return ThreadLocalRandom.current().nextInt(35519, 35545)+1;	
     
     // add faster index
-    int prefixNum = profilingDNASeq(seq,4);
+    int prefixNum = profilingDNASeq(seq,6);
     //System.out.print(seq);
     //System.out.println(prefixNum);
     
     int lower=Integer.valueOf(fastIndexArray[prefixNum].split("\\s+")[0])-1;
-    int upper=Integer.valueOf(fastIndexArray[prefixNum].split("\\s+")[1]);
+    int upper=Integer.valueOf(fastIndexArray[prefixNum].split("\\s+")[1])+1;
+    //int lower=Integer.valueOf(fastIndexArray[prefixNum].split("\\s+")[0])-1;
+    //int upper=Integer.valueOf(fastIndexArray[prefixNum].split("\\s+")[1])+1;
     //System.out.println(lower);
     //System.out.println(upper);
     if(upper>keyCount-1)
         upper=keyCount-1;
     //lower=0;
     int middle = (upper+lower)/2;
-
+    String minKey = keyMapperArray[0].split("\\s+")[1];
+    String maxKey = keyMapperArray[keyCount-1].split("\\s+")[1];
+    if(minKey.compareTo(seq)>=0) 
+      return 1;
+    if(maxKey.compareTo(seq)<0)
+      return keyCount+1;
+    
     String lowerKey = keyMapperArray[lower].split("\\s+")[1];
     String upperKey = keyMapperArray[upper].split("\\s+")[1];
-    if(lowerKey.compareTo(seq)>=0) 
-      return 1;
-    if(upperKey.compareTo(seq)<0)
-      return keyCount+1;
 
     while(true){
       String middleKey = keyMapperArray[middle].split("\\s+")[1];
