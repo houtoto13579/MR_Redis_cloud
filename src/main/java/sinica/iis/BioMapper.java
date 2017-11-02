@@ -200,14 +200,16 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
     // C: 11076~11154
     // G: 19526~19537
     // T: 27864~27947
-    if(seq.equals("A"))
-        return ThreadLocalRandom.current().nextInt(2, 23)+1;	
-    if(seq.equals("C"))
-        return ThreadLocalRandom.current().nextInt(11076, 11153)+1;
-    if(seq.equals("G"))
-        return ThreadLocalRandom.current().nextInt(19526, 19536)+1;	
-    if(seq.equals("T"))
-        return ThreadLocalRandom.current().nextInt(27864, 27946)+1;	
+    if(seq.length()<=1){
+        if(seq.equals("A"))
+            return ThreadLocalRandom.current().nextInt(2, 23)+1;	
+        if(seq.equals("C"))
+            return ThreadLocalRandom.current().nextInt(11076, 11153)+1;
+        if(seq.equals("G"))
+            return ThreadLocalRandom.current().nextInt(19526, 19536)+1;	
+        if(seq.equals("T"))
+            return ThreadLocalRandom.current().nextInt(27864, 27946)+1;	
+    }
     // for key 39005(Line #, not array) //
     // AC: 3484~3501 
     // AT: 8231~8251
@@ -217,44 +219,46 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
     // GT: 25574~25590
     // TC: 30313~30331
     // TT: 35519~35546
-    if(seq.equals("AC"))
-        return ThreadLocalRandom.current().nextInt(3484, 3500)+1;	
-    if(seq.equals("AT"))
-        return ThreadLocalRandom.current().nextInt(8231, 8250)+1;
-    if(seq.equals("CC"))
-        return ThreadLocalRandom.current().nextInt(14166, 14184)+1;	
-    if(seq.equals("CT"))
-        return ThreadLocalRandom.current().nextInt(17055, 17072)+1;	
-    if(seq.equals("GC"))
-        return ThreadLocalRandom.current().nextInt(21716, 21732)+1;	
-    if(seq.equals("GT"))
-        return ThreadLocalRandom.current().nextInt(25574, 25589)+1;	
-    if(seq.equals("TC"))
-        return ThreadLocalRandom.current().nextInt(30313, 30330)+1;	
-    if(seq.equals("TT"))
-        return ThreadLocalRandom.current().nextInt(35519, 35545)+1;	
+    else if(seq.length()==2){
+        if(seq.equals("AC"))
+            return ThreadLocalRandom.current().nextInt(3484, 3500)+1;	
+        if(seq.equals("AT"))
+            return ThreadLocalRandom.current().nextInt(8231, 8250)+1;
+        if(seq.equals("CC"))
+            return ThreadLocalRandom.current().nextInt(14166, 14184)+1;	
+        if(seq.equals("CT"))
+            return ThreadLocalRandom.current().nextInt(17055, 17072)+1;	
+        if(seq.equals("GC"))
+            return ThreadLocalRandom.current().nextInt(21716, 21732)+1;	
+        if(seq.equals("GT"))
+            return ThreadLocalRandom.current().nextInt(25574, 25589)+1;	
+        if(seq.equals("TC"))
+            return ThreadLocalRandom.current().nextInt(30313, 30330)+1;	
+        if(seq.equals("TT"))
+            return ThreadLocalRandom.current().nextInt(35519, 35545)+1;	   
+    }
     
-    // add faster index
-    int prefixNum = profilingDNASeq(seq,6);
-    //System.out.print(seq);
-    //System.out.println(prefixNum);
-    
-    int lower=Integer.valueOf(fastIndexArray[prefixNum].split("\\s+")[0])-1;
-    int upper=Integer.valueOf(fastIndexArray[prefixNum].split("\\s+")[1])+1;
-    //int lower=Integer.valueOf(fastIndexArray[prefixNum].split("\\s+")[0])-1;
-    //int upper=Integer.valueOf(fastIndexArray[prefixNum].split("\\s+")[1])+1;
-    //System.out.println(lower);
-    //System.out.println(upper);
-    if(upper>keyCount-1)
-        upper=keyCount-1;
-    //lower=0;
-    int middle = (upper+lower)/2;
     String minKey = keyMapperArray[0].split("\\s+")[1];
     String maxKey = keyMapperArray[keyCount-1].split("\\s+")[1];
     if(minKey.compareTo(seq)>=0) 
       return 1;
     if(maxKey.compareTo(seq)<0)
       return keyCount+1;
+    
+    // add faster index
+    int prefixNum = profilingDNASeq(seq,6);
+    //System.out.print(seq);
+    //System.out.println(prefixNum);
+    int lower=Integer.valueOf(fastIndexArray[prefixNum].split("\\s+")[0])-1;
+    int upper=Integer.valueOf(fastIndexArray[prefixNum].split("\\s+")[1])+1;
+    //int lower=0;
+    //int upper=keyCount-1;
+    //System.out.println(lower);
+    //System.out.println(upper);
+    if(upper>keyCount-1)
+        upper=keyCount-1;
+    //lower=0;
+    int middle = (upper+lower)/2;
     
     String lowerKey = keyMapperArray[lower].split("\\s+")[1];
     String upperKey = keyMapperArray[upper].split("\\s+")[1];

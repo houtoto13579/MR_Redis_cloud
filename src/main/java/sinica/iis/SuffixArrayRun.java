@@ -36,7 +36,7 @@ public class SuffixArrayRun{
 	
 	//conf.set("mapreduce.map.java.opts", "-Xmx2000m");
 	conf.set("mapreduce.reduce.java.opts", "-Xmx7168m");	
-	conf.set("mapreduce.map.java.opts", "-Xmx1900m");
+	conf.set("mapreduce.map.java.opts", "-Xmx2000m");
 	//conf.set("mapreduce.reduce.java.opts", "-Xmx6144m");
 	//conf.setInt("mapreduce.map.memory.mb", 4096);
 	//conf.setInt("mapreduce.reduce.memory.mb", 16384);	
