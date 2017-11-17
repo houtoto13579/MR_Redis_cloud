@@ -76,6 +76,11 @@ You can access Web UI by two port.
 - DataNode: port 50070
 - yarn: port 8088
 
+## Slice File
+
+head -n 60000000 LGC_EZ01_400bp_AGTTCC_L001.R1.sfa | tail -n 30000000 > ~/chunk2.sfa
+head -n 30000000 eel_PE400.R1.sfa > eel_chunk1.sfa
+
 ## Troubleshooting
 ### Balancer
 Hadoop(HDFS) will encounter inbalanced problems while storing file or in the middle of map and reduce.
