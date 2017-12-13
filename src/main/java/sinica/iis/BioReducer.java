@@ -18,10 +18,6 @@ import org.apache.log4j.Logger;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPoolConfig;
 
-
-
-
-
 public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable, Text> {
   static final int NUM_PREFIX = 13;
   static final int TIME_OUT = 600000;
@@ -53,7 +49,7 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
   // ### testing variable init by Yueh
   private int write_counter, sequenceInReducerCounter;
   private final boolean WRITE_ALL_PARTITION = true;
-  static final int COUNTTO = 100;
+  static final int COUNTTO = 500;
   private String previousKeySuffix;
 
 
@@ -63,8 +59,8 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
     Configuration job = context.getConfiguration();
     BioReducer.numNodes = job.getInt("NUM_NODES", 1);
     BioReducer.redisHosts = job.get("REDIS_HOSTS", "localhost").split(",");
-    sLogger.info("The number of node is " + numNodes);
-    sLogger.info("The redis hosts are " + redisHosts[1]);
+    //sLogger.info("The number of node is " + numNodes);
+    //sLogger.info("The redis hosts are " + redisHosts[1]);
     this.bulksOfKeys = new ArrayList<>();
     this.bulksOfOffsets = new ArrayList<>();
     this.bulksOfValues = new ArrayList<>();
@@ -106,7 +102,7 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
       }
      */
     }
-    System.out.print("&&&&&&&&&   "+ this.sequenceInReducerCounter+"   &&&&&&&&&&\r\n");
+    //System.out.print("&&&&&&&&&   "+ this.sequenceInReducerCounter+"   &&&&&&&&&&\r\n");
 
   }
 
@@ -130,10 +126,11 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
       String decoded_prefix;
 
       int reduce_group_size = 0;
-      
+      int valueSize = 0;
       if(key.get() == 0){
         StringBuilder tmp_suffix_offset = new StringBuilder("$ ");
         for(LongWritable value: values){
+	  valueSize++;
           offset = (int)(value.get()%1000L);
 
           tmp_suffix_offset.append(offset);
@@ -142,8 +139,8 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
           this.suffixOffset.set(tmp_suffix_offset.toString());
           
           this.write_counter += 1;
-          if(partitionCounter("$")){
-          	context.write(this.seqNumber, this.suffixOffset);
+          if(writeCounter("$")){
+          	//context.write(this.seqNumber, this.suffixOffset);
           }
 
           tmp_suffix_offset.delete(2, tmp_suffix_offset.length());
@@ -156,7 +153,7 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
         boolean multiple_get = false;
         for(LongWritable value: values){
         	//System.out.print("value: " + value.get() + "\n");   // Print value for testing
-
+	  valueSize++;
           offset = (int)(value.get()%1000L);
           mem_key = new Long((value.get()-offset)/1000L);
        
@@ -189,6 +186,14 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
         
                 
       }
+      //THIS IS FOR PRINT SIZE OF KEY
+      this.seqNumber.set(key.get());
+      this.suffixOffset.set(Integer.toString(valueSize));
+      context.write(this.seqNumber, this.suffixOffset);
+      //THIS IS FOR PRINT SIZE OF KEY
+      
+      //System.out.print("key: " + key.get() + "size:" + valueSize);   // Print value for key and size
+      
       end = System.currentTimeMillis();      
       //sLogger.info("One Reduce group time("+decodePrefix(key.get(), NUM_PREFIX)+"): "+(end-start)+" ms");
       //sLogger.info("                 size: "+reduce_group_size);
@@ -323,11 +328,13 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
  
         for(SeqNoSuffixOffset item: this.sortedSuffix){
           this.seqNumber.set(item.seqNo);
-          this.suffixOffset.set(item.toShortString()); //toShortString() for only index and set
+	  //toShortString() only index toKeyString() for key generation
+	  //toString() for validation
+          this.suffixOffset.set(item.toShortString()); 
           
           this.write_counter += 1;
-          if(partitionCounter(item.suffix)){
-          	context.write(this.seqNumber, this.suffixOffset);
+          if(writeCounter(item.suffix)){
+          	//context.write(this.seqNumber, this.suffixOffset);
           }
         }
           	
@@ -366,7 +373,7 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
       
     }
 
-    private boolean partitionCounter(String suffix){
+    private boolean writeCounter(String suffix){
     	if (WRITE_ALL_PARTITION){
     		return true;
     	}

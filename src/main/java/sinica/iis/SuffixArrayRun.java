@@ -21,8 +21,9 @@ public class SuffixArrayRun{
         }
         
         Configuration conf = new Configuration();
+        
+        
         //Configuration conf = getConf();
-
 	conf.set("fs.defaultFS", "hdfs://140.109.17.134:9000");
         conf.set("mapreduce.jobtracker.address", "140.109.17.134:54311");
         conf.set("mapreduce.framework.name", "yarn");
@@ -30,8 +31,9 @@ public class SuffixArrayRun{
 	conf.set("yarn.resourcemanager.webapp.address", "140.109.17.134:8088");
 	conf.set("mapreduce.jobhistory.address","140.109.17.134:10020");
 	conf.set("mapreduce.jobhistory.webapp.address", "140.109.17.134:19888");
-	
-    long milliSeconds = 1000*60*300; //60 mins
+        
+
+        long milliSeconds = 1000*60*300; //60 mins
  	conf.setLong("mapred.task.timeout", milliSeconds);
 	
 	//conf.set("mapreduce.map.java.opts", "-Xmx2000m");
@@ -51,7 +53,7 @@ public class SuffixArrayRun{
         Job job = Job.getInstance(conf);
 
         // Specify various job-specific parameters     
-        job.setJobName("fast_index_6 eel");
+        job.setJobName("Extension case grouper key count");
         //job.setJobName("(8G reducer/7G opts)Method 1 Run SuffixArray for Bio Info (64) 160w CMS GC MGET Suffix");
         //job.setJobName("Run SuffixArray for Bio Info (32) 160W CMS AlwaysTenure NewRatio=5");
         

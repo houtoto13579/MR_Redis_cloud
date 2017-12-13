@@ -34,7 +34,7 @@ def getPrefix(suffix,l):
 if __name__ == "__main__":
     #False mean 0 is the smallest, 63 is biggest
 
-    fileName = "100k_key_39005"
+    fileName = "100k_G_key_39383"
     file = open(fileName,"r").readlines()
     lengthOfPrefix = (int)(sys.argv[1])
     first=0

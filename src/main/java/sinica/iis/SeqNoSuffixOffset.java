@@ -37,5 +37,10 @@ public class SeqNoSuffixOffset implements Comparator<SeqNoSuffixOffset>, Compara
     buffer.append(this.offset);
     return buffer.toString(); 
   }
+  public String toKeyString(){
+    StringBuilder buffer = new StringBuilder(this.suffix.length());
+    buffer.append(this.suffix);
+    return buffer.toString(); 
+  }
 }
 
