@@ -8,10 +8,10 @@ public class BioPartitioner extends Partitioner<IntWritable,LongWritable> {
   public int getPartition(IntWritable DNA_prefix, LongWritable value, int numReduceTasks) {
   //public int getPartition(LongWritable DNA_prefix, LongWritable value, int numReduceTasks) {
 	
-  	boolean USING_KEY = true;
+	boolean USING_KEY = true;
 	//int keyCount = 196;
 	//int keyCount = 19567;
-    	//int keyCount = 97835;
+  //int keyCount = 97835;
 	//int keyCount = 19228; //Pass 30G
 	//int keyCount = 39006; //eel
 	int keyCount = 39384; // grouper

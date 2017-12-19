@@ -32,9 +32,8 @@ def getPrefix(suffix,l):
     return ans
 
 if __name__ == "__main__":
-    #False mean 0 is the smallest, 63 is biggest
-
-    fileName = "100k_G_key_39383"
+    #fileName = "keys/100k_G_key_39383_new"
+    fileName = "keys/100k_key_39005_new"
     file = open(fileName,"r").readlines()
     lengthOfPrefix = (int)(sys.argv[1])
     first=0
@@ -52,7 +51,7 @@ if __name__ == "__main__":
                 if index==len(file):
                     last=index
                     break
-                linePrefix=getPrefix(file[index].split()[1],lengthOfPrefix)
+                linePrefix=getPrefix(file[index].split()[0],lengthOfPrefix)
                 if linePrefix!=thisPrefix:
                      last=index
                      break

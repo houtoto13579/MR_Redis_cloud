@@ -21,7 +21,7 @@ if __name__ == "__main__":
 	    lineCount=0
             with open('../merge_grouper_key','a') as outfile:
             	for line in file:
-		    outfile.write(line)
+		            outfile.write(line)
 	    fileCount+=addNum
         else:
             print "=== Finish Merging! ==="
