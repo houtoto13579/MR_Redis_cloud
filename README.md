@@ -21,8 +21,8 @@ mvn install:install-file -Dfile=libs/jedis-3.0.0-SNAPSHOT.jar -DgroupID=redis.cl
 > The generated jar is located in ${project.basdir}/target/${artifactId}-${version}-jar-with-dependencies.jar
 ## Hadoop
 ### Environment setting
-1. Java version 1.8
-2. Hadoop ersion 2.7.2
+1. Java version 1.8 (1.7 will cause problem in Mapper)
+2. Hadoop version 2.7.2
 
 ### Start Proxy Server and History(8088)
 ```shell
@@ -58,18 +58,15 @@ mvn clean package && hadoop fs -rm -r -f /output_10K_grouper && hadoop jar targe
 ## Validating(Testing)
 
 Change the directory in validate.py before using it.
-
-After that, simply input:
 ```shell
     python validate.py
 ```
-
 However, the sequence made by HH is different, which 63 is the smallest.
 ## Web UI
 Web UI can access to the log, but the historyUI link is wrong. Just replace iiscloud01 with IP.
 
 You can access Web UI by two port.
-- DataNode: port 50070
+- DFS: port 50070
 - yarn: port 8088
 
 ## Slice File
