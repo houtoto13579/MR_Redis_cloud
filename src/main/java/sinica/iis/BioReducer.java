@@ -48,7 +48,7 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
 
   // ### testing variable init by Yueh
   private int write_counter, sequenceInReducerCounter;
-  private final boolean WRITE_ALL_PARTITION = true;
+  private final boolean WRITE_ALL_SUFFIX = true;
   static final int COUNTTO = 500;
   private String previousKeySuffix;
 
@@ -140,7 +140,7 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
           
           this.write_counter += 1;
           if(writeCounter("$")){
-          	//context.write(this.seqNumber, this.suffixOffset);
+          	context.write(this.seqNumber, this.suffixOffset);
           }
 
           tmp_suffix_offset.delete(2, tmp_suffix_offset.length());
@@ -176,20 +176,18 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
         //outlier of reduce group
         //if(reduce_group_size > GROUP_SIZE)
         //  sLogger.info("Key "+decodePrefix(key.get(), NUM_PREFIX)+"for Reduce group size: "+reduce_group_size);
-
                 
         if(multiple_get){
           batchProcess(context, START_TO_SORT);
           printSizeAndAccumulate();
           this.get_size = 0;
         }
-        
                 
       }
       //THIS IS FOR PRINT SIZE OF KEY
-      this.seqNumber.set(key.get());
-      this.suffixOffset.set(Integer.toString(valueSize));
-      context.write(this.seqNumber, this.suffixOffset);
+      //this.seqNumber.set(key.get());
+      //this.suffixOffset.set(Integer.toString(valueSize));
+      //context.write(this.seqNumber, this.suffixOffset);
       //THIS IS FOR PRINT SIZE OF KEY
       
       //System.out.print("key: " + key.get() + "size:" + valueSize);   // Print value for key and size
@@ -200,7 +198,6 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
         
 
     }//end of Reduce()
-
 
     private void batchProcess(Context context, boolean start_to_sort)throws IOException, InterruptedException{
       Collections.shuffle(this.scramble_order);
@@ -223,20 +220,14 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
         //context.progress(); // report on progress
       }
 
-
       temp_endT = System.currentTimeMillis();
-      
- 
+
       //sLogger.info("Accumulated Reduce group size: "+this.get_size+"  time: "+(temp_endT-temp_startT)+" ms");
       //sLogger.info("Speed of getting data from 16 Redises: "+0.2*this.get_size/(temp_endT-temp_startT)+" MB/sec");
 
-
       displayKeyValue(context, start_to_sort);
-
       //this.groupKeys.clear();
       //this.groupValues.clear();
-
-      
     }
 
     private void dispatchKeyValuePair(Long f_key, Integer f_value){
@@ -245,7 +236,6 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
       this.bulksOfKeys.get(sel).add(f_key.toString());
       this.bulksOfOffsets.get(sel).add(f_value);
     }
-
 
     private String decodePrefix(long f_key, int num_prefix){
       int digit;
@@ -283,7 +273,6 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
                                       ArrayList<Integer> bulkOfOffsets){
       String read;
       String seqNo;
-
       SeqNoSuffixOffset element;
 
       for(int j=0;j<bulkOfKeys.size();j++){
@@ -309,7 +298,6 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
       }
       
       //ArrayList <SeqNoSuffixOffset> sortedSuffix = new ArrayList<SeqNoSuffixOffset>(capacity);
- 
       long temp_startT;
       long temp_endT;
 
@@ -328,37 +316,29 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
  
         for(SeqNoSuffixOffset item: this.sortedSuffix){
           this.seqNumber.set(item.seqNo);
-	  //toShortString() only index toKeyString() for key generation
-	  //toString() for validation
-          this.suffixOffset.set(item.toShortString()); 
-          
+          //toShortString() only index toKeyString() for key generation
+          //toString() for validation
+          this.suffixOffset.set(item.toShortString());
           this.write_counter += 1;
           if(writeCounter(item.suffix)){
-          	//context.write(this.seqNumber, this.suffixOffset);
+          	context.write(this.seqNumber, this.suffixOffset);
           }
         }
-          	
         //force clean
         this.sortedSuffix.clear();
       }
-
-      
     }
 
     private boolean isLargeGrain(int encodedPrefix){
       //13 chars
       if(encodedPrefix == 356038411)
         return true;
-    
       if(encodedPrefix == 559488932)
         return true;
-
       if(encodedPrefix == 966389973)
         return true;
-
       if(encodedPrefix == 1169840494)
         return true;
-
       return false;
     }
 
@@ -370,11 +350,10 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
         suffix_start[i] = starts.get(i).longValue();
 
       return jedis.mgetsuffix(keys.toArray(new String[0]), suffix_start);
-      
     }
 
     private boolean writeCounter(String suffix){
-    	if (WRITE_ALL_PARTITION){
+    	if (WRITE_ALL_SUFFIX){
     		return true;
     	}
     	else{
@@ -385,8 +364,8 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
               return true;
             }
             this.write_counter = 0;
-	  }
-	  return false;
+	        }
+	      return false;
     	}
     }
 

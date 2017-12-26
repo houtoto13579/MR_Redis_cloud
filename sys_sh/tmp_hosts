@@ -1,0 +1,25 @@
+127.0.0.1	localhost
+140.109.17.134	iiscloud01
+192.168.100.102 iiscloud02
+
+192.168.100.105 iiscloud05
+192.168.100.106 iiscloud06
+192.168.100.107 iiscloud07
+
+192.168.100.109 iiscloud09
+192.168.100.110 iiscloud10
+192.168.100.111 iiscloud11
+192.168.100.112 iiscloud12
+192.168.100.113 iiscloud13
+192.168.100.114 iiscloud14
+192.168.100.115 iiscloud15
+192.168.100.116 iiscloud16
+
+192.168.100.117 iiscloud17
+192.168.100.118 iiscloud18
+192.168.100.119 iiscloud19
+
+# The following lines are desirable for IPv6 capable hosts
+::1     localhost ip6-localhost ip6-loopback
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters

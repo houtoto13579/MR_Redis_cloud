@@ -42,28 +42,6 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
   private String[] keyMapperArray;
   private String[] fastIndexArray;
   private int keyCount;
-  
-  //private List<Jedis> clients = new ArrayList<Jedis>();
-  /*
-  private Jedis[] clients = {
-    new Jedis("140.109.17.134", 6379, 300000),
-    new Jedis("192.168.100.102", 6379, 300000),
-    new Jedis("192.168.100.105", 6379, 300000),
-    new Jedis("192.168.100.106", 6379, 300000),
-    new Jedis("192.168.100.110", 6379, 300000),
-    new Jedis("192.168.100.111", 6379, 300000),
-    new Jedis("192.168.100.115", 6379, 300000),
-    new Jedis("192.168.100.116", 6379, 300000),
-    new Jedis("192.168.100.117", 6379, 300000),
-    new Jedis("192.168.100.118", 6379, 300000),
-    new Jedis("192.168.100.119", 6379, 300000),
-    new Jedis("192.168.100.120", 6379, 300000),
-    new Jedis("192.168.100.121", 6379, 300000),
-    new Jedis("192.168.100.122", 6379, 300000),
-    new Jedis("192.168.100.123", 6379, 300000),
-    new Jedis("192.168.100.124", 6379, 300000),
-  };
-  */
 
   @Override
   protected void setup(Context context) throws IOException, InterruptedException {
@@ -83,10 +61,10 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
     //this.keyMapperArray=this.readLines("10k_key_19227");
    
     //choose grouper or eel 
-    //this.keyMapperArray=this.readLines("hdfs:/key/100k_key_39005");
-    this.keyMapperArray=this.readLines("hdfs:/key/100k_G_key_39383");
-    //this.fastIndexArray=this.readLines("hdfs:/key/fast_index_6");
-    this.fastIndexArray=this.readLines("hdfs:/key/fast_index_G_6");
+    //this.keyMapperArray=this.readLines("hdfs:/keys/100k_key_39005");
+    this.keyMapperArray=this.readLines("hdfs:/keys/100k_G_key_39383_new");
+    //this.fastIndexArray=this.readLines("hdfs:/keys/fast_index_6");
+    this.fastIndexArray=this.readLines("hdfs:/keys/fast_index_G_6_new");
     this.keyCount=this.keyMapperArray.length;
   }
   protected void cleanup(Context context) throws IOException, InterruptedException {
@@ -252,16 +230,16 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
     // C: 11570~11635
     // G: 19714~19728
     // T: 27754~27846
-    if(seq.length()<=1){
-        if(seq.equals("A"))
-            return ThreadLocalRandom.current().nextInt(2, 26)+1;	
-        if(seq.equals("C"))
-            return ThreadLocalRandom.current().nextInt(11570, 11634)+1;
-        if(seq.equals("G"))
-            return ThreadLocalRandom.current().nextInt(19714, 19727)+1;	
-        if(seq.equals("T"))
-            return ThreadLocalRandom.current().nextInt(27754, 27845)+1;	
-    }
+    // if(seq.length()<=1){
+    //     if(seq.equals("A"))
+    //         return ThreadLocalRandom.current().nextInt(2, 26)+1;	
+    //     if(seq.equals("C"))
+    //         return ThreadLocalRandom.current().nextInt(11570, 11634)+1;
+    //     if(seq.equals("G"))
+    //         return ThreadLocalRandom.current().nextInt(19714, 19727)+1;	
+    //     if(seq.equals("T"))
+    //         return ThreadLocalRandom.current().nextInt(27754, 27845)+1;	
+    // }
     // for key 39005(Line #, not array) //
     // AC: 3704 3723
     // AT: 8659 8679
@@ -271,27 +249,27 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
     // GT: 25364 25381
     // TC: 30283 30300
     // TT: 35686 35715
-    else if(seq.length()==2){
-        if(seq.equals("AC"))
-            return ThreadLocalRandom.current().nextInt(3704, 3722)+1;	
-        if(seq.equals("AT"))
-            return ThreadLocalRandom.current().nextInt(8659, 8678)+1;
-        if(seq.equals("CC"))
-            return ThreadLocalRandom.current().nextInt(14780, 14792)+1;	
-        if(seq.equals("CT"))
-            return ThreadLocalRandom.current().nextInt(17138, 17158)+1;	
-        if(seq.equals("GC"))
-            return ThreadLocalRandom.current().nextInt(21977, 21989)+1;	
-        if(seq.equals("GT"))
-            return ThreadLocalRandom.current().nextInt(25364, 25380)+1;	
-        if(seq.equals("TC"))
-            return ThreadLocalRandom.current().nextInt(30283, 30299)+1;	
-        if(seq.equals("TT"))
-            return ThreadLocalRandom.current().nextInt(35686, 35714)+1;	   
-    }
+    // else if(seq.length()==2){
+    //     if(seq.equals("AC"))
+    //         return ThreadLocalRandom.current().nextInt(3704, 3722)+1;	
+    //     if(seq.equals("AT"))
+    //         return ThreadLocalRandom.current().nextInt(8659, 8678)+1;
+    //     if(seq.equals("CC"))
+    //         return ThreadLocalRandom.current().nextInt(14780, 14792)+1;	
+    //     if(seq.equals("CT"))
+    //         return ThreadLocalRandom.current().nextInt(17138, 17158)+1;	
+    //     if(seq.equals("GC"))
+    //         return ThreadLocalRandom.current().nextInt(21977, 21989)+1;	
+    //     if(seq.equals("GT"))
+    //         return ThreadLocalRandom.current().nextInt(25364, 25380)+1;	
+    //     if(seq.equals("TC"))
+    //         return ThreadLocalRandom.current().nextInt(30283, 30299)+1;	
+    //     if(seq.equals("TT"))
+    //         return ThreadLocalRandom.current().nextInt(35686, 35714)+1;	   
+    // }
     
-    String minKey = keyMapperArray[0].split("\\s+")[1];
-    String maxKey = keyMapperArray[keyCount-1].split("\\s+")[1];
+    String minKey = keyMapperArray[0].split("\\s+")[0];
+    String maxKey = keyMapperArray[keyCount-1].split("\\s+")[0];
     if(minKey.compareTo(seq)>=0) 
       return 1;
     if(maxKey.compareTo(seq)<0)
@@ -299,50 +277,51 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
     
     // fast index array
     int prefixNum = profilingDNASeq(seq,6);
-    int lower=Integer.valueOf(fastIndexArray[prefixNum].split("\\s+")[0])-1;
-    int upper=Integer.valueOf(fastIndexArray[prefixNum].split("\\s+")[1])+1;
+    int lower=Integer.valueOf(fastIndexArray[prefixNum].split("\\s+")[0]);
+    int upper=Integer.valueOf(fastIndexArray[prefixNum].split("\\s+")[1]);
     //int lower=0;
     //int upper=keyCount-1;
 
     if(upper>keyCount-1)
         upper=keyCount-1;
-    //lower=0;
     int middle;   
-    String lowerKey = keyMapperArray[lower].split("\\s+")[1];
-    String upperKey = keyMapperArray[upper].split("\\s+")[1];    
+    String lowerKey = keyMapperArray[lower].split("\\s+")[0];
+    String upperKey = keyMapperArray[upper].split("\\s+")[0];    
     while(true){
       middle=(upper+lower)/2;
-      String middleKey = keyMapperArray[middle].split("\\s+")[1];
+      String[] middleline = keyMapperArray[middle].split("\\s+");
+      String middleKey = middleline[0];
       if (Math.abs(upper-lower)<=1){
-        int randomUpper = lower;
-        int randomLower = lower;
-        int resultKeyLength = middleKey.length();
-        while(resultKeyLength<4){
-          randomLower--;
-          if(randomLower==-1)
-            break;
-          String randomLowerKey = keyMapperArray[randomLower].split("\\s+")[1];
-          if(!randomLowerKey.equals(middleKey)){
-            break;
-          }
-        }
-        while(resultKeyLength<4){
-          randomUpper++;
-          if(randomUpper==keyCount)
-            break;
-          String randomUpperKey = keyMapperArray[randomUpper].split("\\s+")[1];
-          if(!randomUpperKey.equals(middleKey)){
-            break;
-          }
-        }
-        randomLower++; // because we minus first
-        randomUpper--; // because we add first
-        if(randomUpper<=randomLower){
-          return randomUpper+1;
-        }                  
-        int resultKey = ThreadLocalRandom.current().nextInt(randomLower, randomUpper)+1;
-        return resultKey;
-        //return upper+1;
+        int randomLower = Integer.valueOf(middleline[1]);
+        int randomUpper = Integer.valueOf(middleline[2]);
+        // int resultKeyLength = middleKey.length();
+        // while(resultKeyLength<4){
+        //   randomLower--;
+        //   if(randomLower==-1)
+        //     break;
+        //   String randomLowerKey = keyMapperArray[randomLower].split("\\s+")[0];
+        //   if(!randomLowerKey.equals(middleKey)){
+        //     break;
+        //   }
+        // }
+        // while(resultKeyLength<4){
+        //   randomUpper++;
+        //   if(randomUpper==keyCount)
+        //     break;
+        //   String randomUpperKey = keyMapperArray[randomUpper].split("\\s+")[1];
+        //   if(!randomUpperKey.equals(middleKey)){
+        //     break;
+        //   }
+        // }
+        // randomLower++; // because we minus first
+        // randomUpper--; // because we add first
+        // if(randomUpper<=randomLower){
+        //   return randomUpper+1;
+        // }
+        if (randomUpper==randomLower)
+          return randomUpper+1;                  
+        int resultKey = ThreadLocalRandom.current().nextInt(randomLower, randomUpper+1)+1;
+        return resultKey; 
       }
       if(middleKey.compareTo(seq)>0)
         upper=middle;

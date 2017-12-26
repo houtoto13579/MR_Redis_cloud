@@ -4,7 +4,7 @@ import sys, time
 if __name__ == "__main__":
     #False mean 0 is the smallest, 63 is biggest
     reduce_file_origin = False
-    folderName = "../output_grouper_keyCount/"
+    folderName = "../output_10K_grouper/"
     filePrefix = "part-r-"
     print("Merging  under folder " + folderName)
     fileCount = 0

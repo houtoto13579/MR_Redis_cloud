@@ -20,33 +20,30 @@ mvn install:install-file -Dfile=libs/jedis-3.0.0-SNAPSHOT.jar -DgroupID=redis.cl
 `mvn clean package`
 > The generated jar is located in ${project.basdir}/target/${artifactId}-${version}-jar-with-dependencies.jar
 ## Hadoop
+### Environment setting
+1. Java version 1.8
+2. Hadoop ersion 2.7.2
+
 ### Start Proxy Server and History(8088)
 ```shell
+start-yarn.sh
+start-dfs.sh
 mr-jobhistory-daemon.sh --config $HADOOP_HOME/etc/hadoop/ start historyserver
-yarn-daemon.sh start proxyserver`
+yarn-daemon.sh start proxyserver
 ```
 
-### Run
-`hadoop jar ${artifactId}-${version}.jar ${job-name} ${input-folder} ${output-folder}`
-> This command above take files from ${input-folder} and generate the result into $output-folder}.
-
-### Remove result
-`hadoop fs -rm -r ${output-folder}` 
-
-## Files for MapReduce
-- BioMapper.java             // Map()
+## Files for MapReduce(under src directory)
+- BioMapper.java             //Map()
 - BioReducer.java            //Reduce()
-- BioPartitioner.java        //Partition of the key space: not automatic yet
+- BioPartitioner.java        //Partition of the key space
 - SuffixArrayRun.java        //Main program that starts the suffix array construction
 - SeqNoSuffixOffset.java     //Data structure that stores the DNA sequence read
-  
-### Redis that supports mgetsuffix command
-    You need to install Redis on the nodes that can serve the key-value access.
-    The command mgetsuffix can reduce the communication overhead. 
-    https://github.com/hckuo/redis/tree/add-mgetsuffix-command
-### The library of Jedis that supports mgetsuffix command
-    This is the client library that helps the mappers and reducers to communicate with Redis.
-    https://github.com/hckuo/jedis/tree/add-mgetsuffix-command
+
+## Files for experiment (python)
+- validate.py               //validate the correctness of result
+- generate_index.py         //faster index
+- merge.py                  //merge 63 file into 1 file
+- newkey.py                 //generate key file from sample result file
 
 ## Execution
 ### Execution on Local
@@ -55,7 +52,7 @@ mvn clean package && hadoop fs -rm -r -f ~/output_TEST && hadoop jar target/MR_R
 ```
 ### Execution on cloud
 ```shell
-mvn clean package && hadoop fs -rm -r -f /output_10K && hadoop jar target/MR_Redis-1.0-SNAPSHOT-jar-with-dependencies.jar sinica.iis.SuffixArrayRun /input_10K /output_10K
+mvn clean package && hadoop fs -rm -r -f /output_10K_grouper && hadoop jar target/MR_Redis-1.0-SNAPSHOT-jar-with-dependencies.jar sinica.iis.SuffixArrayRun /input_10K_grouper /output_10K_grouper
 ```
 
 ## Validating(Testing)
@@ -68,7 +65,6 @@ After that, simply input:
 ```
 
 However, the sequence made by HH is different, which 63 is the smallest.
-
 ## Web UI
 Web UI can access to the log, but the historyUI link is wrong. Just replace iiscloud01 with IP.
 
@@ -78,7 +74,7 @@ You can access Web UI by two port.
 
 ## Slice File
 
-head -n 60000000 LGC_EZ01_400bp_AGTTCC_L001.R1.sfa | tail -n 30000000 > ~/chunk2.sfa
+head -n 60000000 LGC_EZ01_400bp_AGTTCC_L001.R1.sfa | tail -n 30000000 > ~/chunk2.sfa  <br />
 head -n 30000000 eel_PE400.R1.sfa > eel_chunk1.sfa
 
 ## Troubleshooting
@@ -113,6 +109,8 @@ It is recommended that Redis need to be flush every time before use:
 ```shell
 redis-cli flushall
 ```
+or, using check_redis.sh under sys_sh directory
+
 #### Memory not enough
 change configuration in /etc/redis/redis.conf
 
@@ -124,6 +122,14 @@ change configuration in /etc/redis/redis.conf
 ssh -t iiscloudxx "sudo /etc/init.d/redis-server start"
 ```
 
+### Useful link
+1. [Datanode & Namenode Setting (in Chinese)](http://puremonkey2010.blogspot.tw/2013/10/hadoop-linux-1-namenode-2-datanode.html)
+2. [Tuning Yarn](https://www.cloudera.com/documentation/enterprise/5-8-x/topics/cdh_ig_yarn_tuning.html)
 
-
-
+### Redis that supports mgetsuffix command
+    You need to install Redis on the nodes that can serve the key-value access.
+    The command mgetsuffix can reduce the communication overhead. 
+    https://github.com/hckuo/redis/tree/add-mgetsuffix-command
+### The library of Jedis that supports mgetsuffix command
+    This is the client library that helps the mappers and reducers to communicate with Redis.
+    https://github.com/hckuo/jedis/tree/add-mgetsuffix-command
