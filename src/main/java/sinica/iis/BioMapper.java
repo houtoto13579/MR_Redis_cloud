@@ -71,7 +71,7 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
     for (int i = 0; i < numNodes; i++) {
       if(bulksOfKeys.get(i).size() > 0) {
     	//System.out.print("bulksOfKeys.get: "+bulksOfKeys.get(i)); 
-	      Jedis client = new Jedis(redisHosts[i], 6379, 3000000);
+	      Jedis client = new Jedis(redisHosts[i], 6379, 30000000);
         client.mset(bulksOfKeys.get(i).toArray(new String[0]));
         client.close();
         //clients[i].mset(bulksOfKeys.get(i).toArray(new String[0]));
@@ -164,42 +164,91 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
     if(seq.equals("")||seq==""){
       return 0;
     }
-    
-    String minKey = keyMapperArray[0].split("\\s+")[0];
-    String maxKey = keyMapperArray[keyCount-1].split("\\s+")[0];
-    if(minKey.compareTo(seq)>=0) 
-      return 1;
-    if(maxKey.compareTo(seq)<0)
-      return keyCount+1;
+    //  FOR GROUPER KEY 39383  //
+    // for key 39005(Line #, not array) //
+    // A: 2~27
+    // C: 11570~11635
+    // G: 19714~19728
+    // T: 27754~27846
+    // if(seq.length()<=1){
+    //     if(seq.equals("A"))
+    //         return ThreadLocalRandom.current().nextInt(2, 26)+1;	
+    //     if(seq.equals("C"))
+    //         return ThreadLocalRandom.current().nextInt(11570, 11634)+1;
+    //     if(seq.equals("G"))
+    //         return ThreadLocalRandom.current().nextInt(19714, 19727)+1;	
+    //     if(seq.equals("T"))
+    //         return ThreadLocalRandom.current().nextInt(27754, 27845)+1;	
+    // }
+    // for key 39005(Line #, not array) //
+    // AC: 3704 3723
+    // AT: 8659 8679
+    // CC: 14780 14793
+    // CT: 17138 17159
+    // GC: 21977 21990
+    // GT: 25364 25381
+    // TC: 30283 30300
+    // TT: 35686 35715
+    // else if(seq.length()==2){
+    //     if(seq.equals("AC"))
+    //         return ThreadLocalRandom.current().nextInt(3704, 3722)+1;	
+    //     if(seq.equals("AT"))
+    //         return ThreadLocalRandom.current().nextInt(8659, 8678)+1;
+    //     if(seq.equals("CC"))
+    //         return ThreadLocalRandom.current().nextInt(14780, 14792)+1;	
+    //     if(seq.equals("CT"))
+    //         return ThreadLocalRandom.current().nextInt(17138, 17158)+1;	
+    //     if(seq.equals("GC"))
+    //         return ThreadLocalRandom.current().nextInt(21977, 21989)+1;	
+    //     if(seq.equals("GT"))
+    //         return ThreadLocalRandom.current().nextInt(25364, 25380)+1;	
+    //     if(seq.equals("TC"))
+    //         return ThreadLocalRandom.current().nextInt(30283, 30299)+1;	
+    //     if(seq.equals("TT"))
+    //         return ThreadLocalRandom.current().nextInt(35686, 35714)+1;	   
+    // }
+
+    // String minKey = keyMapperArray[0].split("\\s+")[1];
+    // String maxKey = keyMapperArray[keyCount-1].split("\\s+")[1];
+    // if(minKey.compareTo(seq)>0) 
+    //   return 1;
+    // if(maxKey.compareTo(seq)<0)
+    //   return keyCount+1;
     
     // fast index array
     int prefixNum = profilingDNASeq(seq,6);
     int lower=Integer.valueOf(fastIndexArray[prefixNum].split("\\s+")[0]);
     int upper=Integer.valueOf(fastIndexArray[prefixNum].split("\\s+")[1]);
-    //int lower=0;
-    //int upper=keyCount-1;
-
+    // lower=0;
+    // upper=keyCount-1;
+    String[] lowerLine = keyMapperArray[lower].split("\\s+");
+    String lowerKey = removeLastChar(lowerLine[0]);
+    if(lowerKey.compareTo(seq)>0){
+      int resultKey = Integer.valueOf(lowerLine[1]);
+      return resultKey;
+    }
     if(upper>keyCount-1)
         upper=keyCount-1;
-    int middle;   
-    String lowerKey = keyMapperArray[lower].split("\\s+")[0];
-    String upperKey = keyMapperArray[upper].split("\\s+")[0];    
     while(true){
-      middle=(upper+lower)/2;
+      int middle=(upper+lower)/2;
       String[] middleline = keyMapperArray[middle].split("\\s+");
-      String middleKey = middleline[0];
-      if (Math.abs(upper-lower)<=1){
+      String middleKey = middleline[0]; //old 1, new 0
+      if (upper-lower<=1){
         int randomLower = Integer.valueOf(middleline[1]);
         int randomUpper = Integer.valueOf(middleline[2]);
         if (randomUpper==randomLower)
-          return randomUpper+1;                  
+          return randomUpper+1;
         int resultKey = ThreadLocalRandom.current().nextInt(randomLower, randomUpper+1)+1;
-        return resultKey; 
+        return resultKey;
+        // return lower+1;
       }
-      if(middleKey.compareTo(seq)>0)
+      if(middleKey.compareTo(seq)>0) //middle >= seq
         upper=middle;
       else
         lower=middle;
     }
+  }
+  private static String removeLastChar(String str) {
+    return str.substring(0, str.length() - 1);
   }
 }

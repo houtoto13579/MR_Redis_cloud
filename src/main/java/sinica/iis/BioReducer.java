@@ -185,9 +185,11 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
                 
       }
       //THIS IS FOR PRINT SIZE OF KEY
-      //this.seqNumber.set(key.get());
-      //this.suffixOffset.set(Integer.toString(valueSize));
-      //context.write(this.seqNumber, this.suffixOffset);
+      /*
+      this.seqNumber.set(key.get());
+      this.suffixOffset.set(Integer.toString(valueSize));
+      context.write(this.seqNumber, this.suffixOffset);
+      */
       //THIS IS FOR PRINT SIZE OF KEY
       
       //System.out.print("key: " + key.get() + "size:" + valueSize);   // Print value for key and size
@@ -209,7 +211,7 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
 
       for(int i : this.scramble_order){
         if (this.bulksOfKeys.get(i).size() != 0) {
-          Jedis client = new Jedis(redisHosts[i],6379,3000000);
+          Jedis client = new Jedis(redisHosts[i],6379,30000000);
           
 	  this.bulksOfValues.set(i
                       , (ArrayList<String>) mGetSuffix(this.bulksOfKeys.get(i)
