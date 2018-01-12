@@ -82,21 +82,33 @@ You can run balancer to solve the problem.
 hadoop balancer [-threshold <t>] 
 ```
 
-### Save Mode Problem
+### Cluster Problem
+#### Safe mode
 There are many probelms which will cause the nodemanager to enter safemode. You cannot use hadoop or access data then. Leave safe mode by excuting this:
 ```shell
 hadoop dfsadmin -safemode leave
 ```
-
-***However***, you should check the node condition before leaving save mode. Here are some possible problems:
+***However***, you should check the node condition before leaving save mode.
 #### Node break down
-It is possible that some node will be unstable, you can solve it by restart that node by stop and start the nodemanager and datanode.
+You can try restarting that node by stop and start the nodemanager and datanode.
 ```shell
 hadoop-daemon.sh start datanode
 yarn-daemon.sh start nodemanager
 ```
 If problem remain, try restart the whole computer.
 (***important:*** You should also check whether redis is running or not)
+
+Also, if some node is failed and causing a corrupted file, use this to clean these corrupted file:
+```shell
+hdfs fsck / -delete
+```
+You might need to leave safe node or restart hdfs system to execute this command.
+
+#### Format
+If problem remain, you could format the whole system.
+If you format NameNode only, you have to change the cluster ID in /hadoop_disk/name/current/Version to the one in data node.
+In addition, format the NameNode won't clean the file in each DataNodes. You need to rm each dir(hadoop_disk) in data nodes to release the disk space.  
+
 #### Node don't have enough space and become unhealthy node
 You can use balancer to solve that problem
 

@@ -61,10 +61,10 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
     //this.keyMapperArray=this.readLines("10k_key_19227");
    
     //choose grouper or eel 
-    //this.keyMapperArray=this.readLines("hdfs:/keys/100k_key_39005");
-    this.keyMapperArray=this.readLines("hdfs:/keys/100k_G_key_39383_new");
-    //this.fastIndexArray=this.readLines("hdfs:/keys/fast_index_6");
-    this.fastIndexArray=this.readLines("hdfs:/keys/fast_index_G_6_new");
+    this.keyMapperArray=this.readLines("hdfs:/keys/100k_key_39005_new");
+    //this.keyMapperArray=this.readLines("hdfs:/keys/100k_G_key_39383_new");
+    this.fastIndexArray=this.readLines("hdfs:/keys/fast_index_6_new");
+    //this.fastIndexArray=this.readLines("hdfs:/keys/fast_index_G_6_new");
     this.keyCount=this.keyMapperArray.length;
   }
   protected void cleanup(Context context) throws IOException, InterruptedException {

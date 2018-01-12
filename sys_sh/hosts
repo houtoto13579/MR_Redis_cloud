@@ -1,7 +1,9 @@
 127.0.0.1	localhost
 
+
+192.168.100.106 iiscloud06
+
 192.168.100.109 iiscloud09
-192.168.100.110 iiscloud10
 
 192.168.100.111 iiscloud11
 192.168.100.112 iiscloud12
