@@ -47,8 +47,8 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
   private static String[] redisHosts;
 
   // ### testing variable init by Yueh
-  private int write_counter, sequenceInReducerCounter;
-  private final boolean WRITE_ALL_SUFFIX = true;
+  private int sample_counter, sequenceInReducerCounter;
+  private final boolean SAMPLE_ALL_SUFFIX = true;
   static final int COUNTTO = 500;
   private String previousKeySuffix;
 
@@ -82,7 +82,7 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
       this.scramble_order.add(new Integer(i));
 
     // ### testing variable by Yueh
-    this.write_counter = 0;
+    this.sample_counter = 0;
     this.sequenceInReducerCounter = 0;
 
   }
@@ -138,8 +138,8 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
           this.seqNumber.set((value.get()-offset)/1000L);
           this.suffixOffset.set(tmp_suffix_offset.toString());
           
-          this.write_counter += 1;
-          if(writeCounter("$")){
+          this.sample_counter += 1;
+          if(sampleCounter("$")){
           	context.write(this.seqNumber, this.suffixOffset);
           }
 
@@ -153,7 +153,7 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
         boolean multiple_get = false;
         for(LongWritable value: values){
         	//System.out.print("value: " + value.get() + "\n");   // Print value for testing
-	  valueSize++;
+	        valueSize++;
           offset = (int)(value.get()%1000L);
           mem_key = new Long((value.get()-offset)/1000L);
        
@@ -211,14 +211,13 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
 
       for(int i : this.scramble_order){
         if (this.bulksOfKeys.get(i).size() != 0) {
-          Jedis client = new Jedis(redisHosts[i],6379,30000000);
-          
-	  this.bulksOfValues.set(i
+          Jedis client = new Jedis(redisHosts[i],6379,3000000);
+	        this.bulksOfValues.set(i
                       , (ArrayList<String>) mGetSuffix(this.bulksOfKeys.get(i)
                       , this.bulksOfOffsets.get(i)
                       , client)); 
           client.close();
-	}
+	      }
         //context.progress(); // report on progress
       }
 
@@ -267,7 +266,6 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
       }
       buffer.append("$");
       return buffer.toString();
-
     }
 
     private void prepareSuffixForSort(ArrayList <String> bulkOfKeys,
@@ -321,8 +319,8 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
           //toShortString() only index toKeyString() for key generation
           //toString() for validation
           this.suffixOffset.set(item.toShortString());
-          this.write_counter += 1;
-          if(writeCounter(item.suffix)){
+          this.sample_counter += 1;
+          if(sampleCounter(item.suffix)){
           	context.write(this.seqNumber, this.suffixOffset);
           }
         }
@@ -354,18 +352,18 @@ public class BioReducer extends Reducer<IntWritable, LongWritable, LongWritable,
       return jedis.mgetsuffix(keys.toArray(new String[0]), suffix_start);
     }
 
-    private boolean writeCounter(String suffix){
-    	if (WRITE_ALL_SUFFIX){
+    private boolean sampleCounter(String suffix){
+    	if (SAMPLE_ALL_SUFFIX){
     		return true;
     	}
     	else{
-          if (this.write_counter == COUNTTO){
+          if (this.sample_counter == COUNTTO){
             if(suffix!=this.previousKeySuffix){
-              this.write_counter = 0;
+              this.sample_counter = 0;
               this.previousKeySuffix=suffix;
               return true;
             }
-            this.write_counter = 0;
+            this.sample_counter = 0;
 	        }
 	      return false;
     	}

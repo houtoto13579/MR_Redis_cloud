@@ -219,30 +219,35 @@ public class BioMapper extends Mapper<LongWritable, Text, IntWritable, LongWrita
     int prefixNum = profilingDNASeq(seq,6);
     int lower=Integer.valueOf(fastIndexArray[prefixNum].split("\\s+")[0]);
     int upper=Integer.valueOf(fastIndexArray[prefixNum].split("\\s+")[1]);
-    // lower=0;
-    // upper=keyCount-1;
+    //lower=0;
+    //upper=keyCount-1;
     String[] lowerLine = keyMapperArray[lower].split("\\s+");
     String lowerKey = removeLastChar(lowerLine[0]);
     if(lowerKey.compareTo(seq)>0){
-      int resultKey = Integer.valueOf(lowerLine[1]);
+      int resultKey = Integer.valueOf(lowerLine[1]); // without plus one
       return resultKey;
     }
-    if(upper>keyCount-1)
-        upper=keyCount-1;
+    // if(upper>keyCount-1)
+    //     upper=keyCount-1;
     while(true){
       int middle=(upper+lower)/2;
       String[] middleline = keyMapperArray[middle].split("\\s+");
-      String middleKey = middleline[0]; //old 1, new 0
-      if (upper-lower<=1){
+      String middleKey = removeLastChar(middleline[0]); //old 1, new 0
+      if (upper-lower<=1 || middleKey.equals(seq)){
         int randomLower = Integer.valueOf(middleline[1]);
         int randomUpper = Integer.valueOf(middleline[2]);
-        if (randomUpper==randomLower)
+        if (randomUpper==randomLower){
+          // if(randomUpper==6904)
+          //   System.out.println(seq);
+          // else if (randomUpper==6905)
+          //   System.out.println(seq+"--exact");
           return randomUpper+1;
+        }
         int resultKey = ThreadLocalRandom.current().nextInt(randomLower, randomUpper+1)+1;
         return resultKey;
         // return lower+1;
       }
-      if(middleKey.compareTo(seq)>0) //middle >= seq
+      if(middleKey.compareTo(seq)>0) //middle > seq
         upper=middle;
       else
         lower=middle;
