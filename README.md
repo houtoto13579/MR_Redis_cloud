@@ -32,6 +32,20 @@ mr-jobhistory-daemon.sh --config $HADOOP_HOME/etc/hadoop/ start historyserver
 yarn-daemon.sh start proxyserver
 ```
 
+## Dir and File
+
+- src (Main code for proposed method)
+- teraSort (using teraSort to GSA construction)
+- sys_sh (checking system and flush Redis)
+- target (java compile)
+- libs (java compile)
+- keys (keys for proposed method, contain fast index and key file)
+- logs (get data from 50070 and 8088 for experiment)
+- validate.py (validation the output file)
+- merge.py (merge output file)
+- generate_index.py (fast index)
+- newkey.py (generate new key file from old the output of reducer)
+
 ## Files for MapReduce(under src directory)
 - BioMapper.java             //Map()
 - BioReducer.java            //Reduce()
@@ -39,13 +53,10 @@ yarn-daemon.sh start proxyserver
 - SuffixArrayRun.java        //Main program that starts the suffix array construction
 - SeqNoSuffixOffset.java     //Data structure that stores the DNA sequence read
 
-## Files for experiment (python)
-- validate.py               //validate the correctness of result
-- generate_index.py         //faster index
-- merge.py                  //merge 63 file into 1 file
-- newkey.py                 //generate key file from sample result file
-
 ## Execution
+
+before execution, use flush_redis.sh first to clean the Redis database.
+
 ### Execution on Local
 ```shell
 mvn clean package && hadoop fs -rm -r -f ~/output_TEST && hadoop jar target/MR_Redis-1.0-SNAPSHOT-jar-with-dependencies.jar sinica.iis.SuffixArrayRun ~/input_10K ~/output_TEST
@@ -62,6 +73,7 @@ Change the directory in validate.py before using it.
     python validate.py
 ```
 However, the sequence made by HH is different, which 63 is the smallest.
+
 ## Web UI
 Web UI can access to the log, but the historyUI link is wrong. Just replace iiscloud01 with IP.
 
@@ -70,9 +82,21 @@ You can access Web UI by two port.
 - yarn: port 8088
 
 ## Slice File
-
 head -n 60000000 LGC_EZ01_400bp_AGTTCC_L001.R1.sfa | tail -n 30000000 > ~/chunk2.sfa  <br />
 head -n 30000000 eel_PE400.R1.sfa > eel_chunk1.sfa
+
+## TeraSort
+
+There are two steps in performing TeraSort.
+
+First, teraGen in teraSort/gen
+```shell
+yarn jar SuffixGen.jar SuffixGen <input> <output>
+```
+Next, teraSort in teraSort/sort
+```shell
+yarn jar SuffixSort.jar testHdp.SuffixSort -Dmapred.reduce.tasks=64 <input> <output>
+```
 
 ## Troubleshooting
 ### Balancer
@@ -96,7 +120,6 @@ hadoop-daemon.sh start datanode
 yarn-daemon.sh start nodemanager
 ```
 If problem remain, try restart the whole computer.
-(***important:*** You should also check whether redis is running or not)
 
 Also, if some node is failed and causing a corrupted file, use this to clean these corrupted file:
 ```shell
@@ -118,14 +141,14 @@ It is recommended that Redis need to be flush every time before use:
 ```shell
 redis-cli flushall
 ```
-or, using check_redis.sh under sys_sh directory
+which can be completed automatically using flush_redis.sh under sys_sh directory
 
 #### Memory not enough
 change configuration in /etc/redis/redis.conf
 
 #### restart or start redis server by yourself
 1. Copy compiled redis from /usr/bin/redis* to new node's /usr/bin/
-2. change node in /home/hduser/sys_sh/hosts, and execute check_redis.sh under /home/hduser/sys_sh, which will perform flush and restart all redis
+2. change node in /sys_sh/hosts, and execute flush_redis.sh under sys_sh, which will perform flush and restart all redis
 3. or use following command
 ```shell
 ssh -t iiscloudxx "sudo /etc/init.d/redis-server start"
